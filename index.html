@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Track and manage Meropenem dispensing for Baghdad Teaching Hospital">
+    <meta name="theme-color" content="#1e293b">
+    <title>Meropenem Tracking System - Baghdad Teaching Hospital</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">⚕</div>
+                    <div>
+                        <div class="app-title">Meropenem Tracking</div>
+                        <div class="app-subtitle">Baghdad Teaching Hospital</div>
+                    </div>
+                </div>
+                <div id="connectionStatus" class="connection-status online">
+                    <span id="connectionIcon">●</span>
+                    <span id="connectionText">Online</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Pending Banner -->
+            <div id="pendingBanner" class="pending-banner">
+                <div class="pending-content">
+                    <div class="pending-info">
+                        <div class="pending-icon">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <div>
+                            <div class="pending-count" id="pendingCount">0</div>
+                            <div class="pending-label">records pending sync</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="syncAllRecords()">
+                        Sync Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <div class="welcome-section">
+                    <div class="welcome-divider">
+                        <div class="divider-line"></div>
+                        <i class="fas fa-activity divider-icon"></i>
+                        <div class="divider-line"></div>
+                    </div>
+                    <h2 class="welcome-title">Welcome Back</h2>
+                    <p class="welcome-subtitle">Baghdad Teaching Hospital • Pharmacy Department</p>
+                </div>
+
+                <!-- Navigation Cards -->
+                <div class="nav-cards">
+                    <div class="nav-card" onclick="showPage('record')">
+                        <div class="nav-card-icon blue">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div>
+                            <div class="nav-card-title">Record Entry</div>
+                            <div class="nav-card-desc">Add new dispensing record</div>
+                            <div class="nav-arrow">→</div>
+                        </div>
+                    </div>
+                    <div class="nav-card" onclick="showPage('records')">
+                        <div class="nav-card-icon emerald">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div>
+                            <div class="nav-card-title">Records List</div>
+                            <div class="nav-card-desc">View patient history</div>
+                            <div class="nav-arrow">→</div>
+                        </div>
+                    </div>
+                    <div class="nav-card" onclick="showPage('dashboard')">
+                        <div class="nav-card-icon purple">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div>
+                            <div class="nav-card-title">Dashboard</div>
+                            <div class="nav-card-desc">View statistics</div>
+                            <div class="nav-arrow">→</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-green">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-value">Active</div>
+                        <div class="stat-label">System Status</div>
+                    </div>
+                    <div class="stat-card stat-blue">
+                        <div class="stat-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="stat-value" id="homeSyncStatus">Local</div>
+                        <div class="stat-label">Data Storage</div>
+                    </div>
+                    <div class="stat-card stat-amber">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-value">Secure</div>
+                        <div class="stat-label">Protected Data</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Record Entry Page -->
+            <div id="recordPage" class="page">
+                <a href="#" class="back-btn" onclick="showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2 class="page-title">New Dispensing Record</h2>
+
+                <!-- Total Amount Display -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Total Amount Dispensed</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="total-amount-display" id="totalAmountDisplay">0 g</div>
+                        <div class="vials-container">
+                            <div class="vial-item">
+                                <div class="vial-label">1g Vials</div>
+                                <div class="vial-count" id="total1gVials">0</div>
+                            </div>
+                            <div class="vial-item">
+                                <div class="vial-label">0.5g Vials</div>
+                                <div class="vial-count" id="total05gVials">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient Details Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title-large">Patient Information</div>
+                    </div>
+                    <div class="card-content">
+                        <form id="recordForm" onsubmit="submitRecord(event)">
+                            <!-- Name and Age -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required">Patient Name</label>
+                                    <input type="text" id="patientName" required placeholder="Enter patient name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="required">Age</label>
+                                    <input type="number" id="age" required min="0" max="150" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="required">Gender</label>
+                                    <select id="gender" required>
+                                        <option value="">Select gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Diagnosis -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-stethoscope"></i>
+                                    Medical Information
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="required">Diagnosis</label>
+                                <select id="diagnosis" required>
+                                    <option value="">Select diagnosis</option>
+                                    <option value="Acute mastoiditis">Acute mastoiditis</option>
+                                    <option value="Acute rhinosinusitis due to intubation">Acute rhinosinusitis due to intubation</option>
+                                    <option value="Bacterial meningitis">Bacterial meningitis</option>
+                                    <option value="Contaminated blast injury">Contaminated blast injury</option>
+                                    <option value="Gangrenous cellulitis">Gangrenous cellulitis</option>
+                                    <option value="HAP post-op">HAP post-op / ventilator-associated</option>
+                                    <option value="Infective bronchiectasis">Infective bronchiectasis exacerbation</option>
+                                    <option value="Lung abscess">Lung abscess</option>
+                                    <option value="NVE">NVE – acute presentation</option>
+                                    <option value="Neutropenic sepsis">Neutropenic sepsis</option>
+                                    <option value="Pleural empyema">Pleural empyema</option>
+                                    <option value="Proven acute pancreatitis">Proven acute pancreatitis</option>
+                                    <option value="Pyogenic liver abscess">Pyogenic liver abscess</option>
+                                    <option value="Radical resection">Radical resection</option>
+                                    <option value="Severe CAP">Severe CAP admitted to ICU</option>
+                                    <option value="Severe diabetic foot">Severe diabetic foot infection</option>
+                                    <option value="Severe secondary peritonitis">Severe secondary peritonitis</option>
+                                    <option value="Sepsis">Sepsis</option>
+                                    <option value="Surgical site">Surgical site infection</option>
+                                    <option value="Others (specify)">Others (specify)</option>
+                                </select>
+                            </div>
+
+                            <!-- Allergy & Duration -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required">Allergy Test</label>
+                                    <select id="allergyTest" required>
+                                        <option value="">Select result</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="required">Duration (days)</label>
+                                    <input type="number" id="duration" required min="1" max="365" />
+                                </div>
+                            </div>
+
+                            <!-- Frequency -->
+                            <div class="form-group">
+                                <label class="required">Frequency</label>
+                                <select id="frequency" required>
+                                    <option value="">Select frequency</option>
+                                    <option value="Every 6 hours (q6h)">Every 6 hours (q6h)</option>
+                                    <option value="Every 8 hours (q8h)">Every 8 hours (q8h)</option>
+                                    <option value="Every 12 hours (q12h)">Every 12 hours (q12h)</option>
+                                    <option value="Every 24 hours (q24h)">Once daily</option>
+                                    <option value="Every 48 hours (q48h)">Every 48 hours (q48h)</option>
+                                    <option value="3 times daily (TID)">3 times daily (TID)</option>
+                                    <option value="Twice daily (BID)">Twice daily (BID)</option>
+                                    <option value="As needed (PRN)">As needed (PRN)</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Meropenem Dispensing -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-pills"></i>
+                                    Meropenem Dispensing
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required">1g Vials</label>
+                                    <input type="number" id="meropenem1gQuantity" min="0" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="required">0.5g Vials</label>
+                                    <input type="number" id="meropenem0_5gQuantity" min="0" />
+                                </div>
+                            </div>
+
+                            <!-- Pharmacist ID -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-user-md"></i>
+                                    Pharmacist Information
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pharmacist ID (Optional)</label>
+                                <input type="text" id="pharmacistId" placeholder="Enter pharmacist ID" />
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary flex-1" id="submitBtn">
+                                    <i class="fas fa-save"></i> Submit Record
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                    <i class="fas fa-undo"></i> Clear
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Records List Page -->
+            <div id="recordsPage" class="page">
+                <a href="#" class="back-btn" onclick="showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2 class="page-title">Records List</h2>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-blue">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="totalRecords">0</div>
+                        <div class="stat-label">Total Records</div>
+                    </div>
+                    <div class="stat-card stat-green">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-value" id="syncedRecords">0</div>
+                        <div class="stat-label">Synced</div>
+                    </div>
+                    <div class="stat-card stat-purple">
+                        <div class="stat-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="stat-value" id="totalMeropenem">0g</div>
+                        <div class="stat-label">Total Dispensed</div>
+                    </div>
+                    <div class="stat-card stat-amber">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value" id="pendingRecords">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="searchInput"
+                           placeholder="Search by patient name or diagnosis..." />
+                    <select class="filter-select" id="filterStatus">
+                        <option value="all">All Records</option>
+                        <option value="synced">Synced Only</option>
+                        <option value="pending">Pending Only</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="exportToCSV()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+
+                <!-- Records Table -->
+                <div class="table-container">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Patient</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Diagnosis</th>
+                                <th>Allergy</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsBody">
+                            <tr id="noRecordsRow">
+                                <td colspan="9">No records yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page">
+                <a href="#" class="back-btn" onclick="showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2 class="page-title">Statistics Dashboard</h2>
+
+                <!-- Main Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-blue">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="dashTotalRecords">0</div>
+                        <div class="stat-label">Total Records</div>
+                    </div>
+                    <div class="stat-card stat-green">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-value" id="dashSyncedRecords">0</div>
+                        <div class="stat-label">Synced Records</div>
+                    </div>
+                    <div class="stat-card stat-purple">
+                        <div class="stat-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="stat-value" id="dashTotalAmount">0g</div>
+                        <div class="stat-label">Total Dispensed</div>
+                    </div>
+                    <div class="stat-card stat-amber">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value" id="dashPendingCount">0</div>
+                        <div class="stat-label">Pending Sync</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-container">
+                    <div class="chart-title">Diagnosis Distribution</div>
+                    <div id="diagnosisChart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Gender Distribution</div>
+                    <div id="genderChart"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <i class="fas fa-shield-alt footer-icon"></i>
+                <div class="footer-hospital">Baghdad Teaching Hospital</div>
+                <div class="footer-text">Meropenem Tracking System v1.0.0</div>
+            </div>
+        </footer>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <!-- Load JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
