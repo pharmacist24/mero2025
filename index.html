@@ -903,29 +903,54 @@
             });
         }
 
+        // CRITICAL FIX: This function now waits for DB write to finish before returning
         async function updateRecord(id, updates) {
             const database = await getDB();
-            const transaction = database.transaction([STORE_NAME], 'readwrite');
-            const objectStore = transaction.objectStore(STORE_NAME);
-            const getRequest = objectStore.get(id);
-            
-            getRequest.onsuccess = () => {
-                const data = getRequest.result;
-                if (data) {
-                    const updatedRecord = { ...data, ...updates };
-                    objectStore.put(updatedRecord);
-                    // Update local state
-                    const index = records.findIndex(r => r.id === id);
-                    if (index !== -1) records[index] = updatedRecord;
-                }
-            };
+            return new Promise((resolve, reject) => {
+                const transaction = database.transaction([STORE_NAME], 'readwrite');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const getRequest = objectStore.get(id);
+                
+                getRequest.onerror = (e) => reject(e);
+                
+                getRequest.onsuccess = () => {
+                    const data = getRequest.result;
+                    if (data) {
+                        const updatedRecord = { ...data, ...updates };
+                        const putRequest = objectStore.put(updatedRecord);
+                        
+                        putRequest.onsuccess = () => {
+                            // Update local state only AFTER DB confirms save
+                            const index = records.findIndex(r => r.id === id);
+                            if (index !== -1) {
+                                // We must replace the object in the array, not mutate it in place 
+                                // to ensure reactivity if the framework supported it (though here we just refresh)
+                                records[index] = { ...updatedRecord };
+                            }
+                            resolve(updatedRecord);
+                        };
+                        
+                        putRequest.onerror = (e) => reject(e);
+                    } else {
+                        reject(new Error("Record not found"));
+                    }
+                };
+            });
         }
 
         async function deleteRecord(id) {
             const database = await getDB();
             const transaction = database.transaction([STORE_NAME], 'readwrite');
-            transaction.objectStore(STORE_NAME).delete(id);
-            records = records.filter(r => r.id !== id);
+            const objectStore = transaction.objectStore(STORE_NAME);
+            
+            return new Promise((resolve, reject) => {
+                const request = objectStore.delete(id);
+                request.onsuccess = () => {
+                    records = records.filter(r => r.id !== id);
+                    resolve();
+                };
+                request.onerror = (e) => reject(e);
+            });
         }
 
         async function getAllRecords() {
@@ -1003,6 +1028,7 @@
                 // 2. Sync Logic
                 if (navigator.onLine) {
                     try {
+                        // We explicitly await syncRecord now
                         await syncRecord(newRecord);
                         // If sync succeeds, show ONE success message
                         showToast('success', 'Record Saved & Synced Successfully');
@@ -1056,7 +1082,7 @@
                 body: JSON.stringify(payload)
             });
             
-            // Update local DB to mark as synced
+            // This await now waits for the DB to update and the array to sync
             await updateRecord(record.id, { synced: true, syncedAt: new Date().toISOString() });
         }
 
