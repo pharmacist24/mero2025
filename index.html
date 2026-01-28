@@ -8,7 +8,7 @@
     <title>Meropenem Tracking System - Baghdad Teaching Hospital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Meropenem Tracking System Styles - Large Font & Highly Responsive */
+        /* Meropenem Tracking System Styles - Midnight Theme */
 
         *,
         *::before,
@@ -33,31 +33,41 @@
             --amber-color: #d97706;
 
             --bg-color: #f8fafc;
+            --bg-gradient-start: #f8fafc;
+            --bg-gradient-mid: #e2e8f0;
+            --bg-gradient-end: #f1f5f9;
+
             --border-color: #cbd5e1;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
+            --text-muted: #9ca3af;
 
-            /* INCREASED SIZES FOR BETTER READABILITY */
-            --base-font-size: 16px; 
-            --input-font-size: 18px;
-            --label-font-size: 16px;
-            --input-padding: 14px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.08);
+            --shadow-md: 0 6px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+
+            --radius-sm: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.25rem;
+
+            --transition-fast: all 0.2s ease;
+            --transition-normal: all 0.3s ease;
+            --transition-slow: all 0.4s ease;
         }
 
         html {
             scroll-behavior: smooth;
-            font-size: var(--base-font-size);
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            line-height: 1.5;
+            line-height: 1.6;
             color: var(--text-primary);
-            background: #f1f5f9;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
-            padding-bottom: 70px; /* Space for footer */
+            padding-bottom: 40px; /* Space for footer */
         }
 
         /* LOADING SCREEN */
@@ -69,7 +79,6 @@
             bottom: 0;
             background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
@@ -91,17 +100,17 @@
 
         .loading-text {
             color: white;
-            margin-top: 20px;
+            margin-left: 20px;
             font-size: 1.25rem;
             font-weight: 600;
         }
 
-        /* HEADER - RESPONSIVE */
+        /* HEADER */
         .header {
             background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
             color: white;
             padding: 10px 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -122,7 +131,7 @@
         }
 
         .logo-icon {
-            background: var(--warning-color);
+            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
             width: 40px;
             height: 40px;
             border-radius: 8px;
@@ -208,7 +217,7 @@
             background: white;
             border-radius: var(--radius-md);
             padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
             cursor: pointer;
             border: 2px solid transparent;
             transition: all 0.2s;
@@ -236,6 +245,7 @@
         .nav-card-icon.blue { background: var(--info-color); }
         .nav-card-icon.emerald { background: var(--success-color); }
         .nav-card-icon.purple { background: var(--purple-color); }
+        .nav-card-icon.orange { background: var(--warning-color); } /* For GFR */
 
         .nav-card-title {
             font-size: 1rem;
@@ -253,9 +263,10 @@
         .card {
             background: white;
             border-radius: var(--radius-md);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
             margin-bottom: 20px;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
         .card-header {
@@ -292,7 +303,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 700;
-            font-size: var(--label-font-size);
+            font-size: 16px;
             color: var(--text-primary);
         }
 
@@ -305,8 +316,8 @@
         select,
         textarea {
             width: 100%;
-            padding: var(--input-padding);
-            font-size: var(--input-font-size); /* 18px prevents zoom on iOS */
+            padding: 14px;
+            font-size: 18px; /* 18px prevents zoom on iOS */
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
             background: #fff;
@@ -390,25 +401,25 @@
             font-size: 1rem;
         }
 
-        /* TABLES - MOBILE SCROLLABLE */
+        /* TABLES */
         .table-container {
             background: white;
             border-radius: var(--radius-md);
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
             margin-bottom: 20px;
             border: 1px solid var(--border-color);
         }
 
         .table-wrapper {
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            -webkit-overflow-scrolling: touch;
         }
 
         .records-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.95rem; /* Readable table font */
+            font-size: 0.95rem;
             white-space: nowrap;
         }
 
@@ -500,7 +511,7 @@
         /* TOAST */
         .toast-container {
             position: fixed;
-            top: 70px; /* Below header */
+            top: 70px;
             right: 15px;
             z-index: 2000;
             width: 300px;
@@ -517,37 +528,113 @@
             font-weight: 500;
         }
 
+        /* --- GFR SPECIFIC STYLES --- */
+        .input-group-inline {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .input-wrapper {
+            flex: 1;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-sm);
+            background: white;
+            flex: 1;
+            justify-content: center;
+            min-width: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .radio-option.selected {
+            border-color: var(--midnight-primary);
+            background: #eff6ff;
+            color: var(--midnight-primary);
+        }
+
+        .radio-option input { display: none; }
+
+        .result-card {
+            background: #f8fafc;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            display: none;
+        }
+
+        .result-card.visible {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--midnight-primary);
+            line-height: 1.1;
+            margin: 10px 0;
+        }
+
+        .ckd-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .stage-g1 { background: #10b981; }
+        .stage-g2 { background: #3b82f6; }
+        .stage-g3a { background: #f59e0b; }
+        .stage-g3b { background: #f97316; }
+        .stage-g4 { background: #ef4444; }
+        .stage-g5 { background: #7f1d1d; }
+
+        .hidden { display: none !important; }
+        .error-msg { color: var(--danger-color); font-size: 0.85rem; margin-top: 5px; display: none; }
+
         /* RESPONSIVE ADJUSTMENTS */
         @media (max-width: 600px) {
             .nav-cards {
                 grid-template-columns: 1fr; /* Stack vertically on mobile */
             }
-
             .nav-card {
                 display: flex;
                 align-items: center;
                 text-align: left;
                 gap: 15px;
             }
-
-            .nav-card-icon {
-                margin: 0;
-            }
+            .nav-card-icon { margin: 0; }
 
             .form-row {
                 grid-template-columns: 1fr; /* Stack inputs on mobile */
                 gap: 15px;
             }
-
             .app-title { font-size: 1rem; }
             .app-subtitle { font-size: 0.75rem; }
-            
             .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
-            
-            /* Ensure inputs are very tappable */
-            input, select, textarea {
-                min-height: 50px; 
-            }
+            input, select, textarea { min-height: 50px; }
         }
     </style>
 </head>
@@ -616,13 +703,14 @@
                             <div class="nav-card-desc">View patient history</div>
                         </div>
                     </div>
-                    <div class="nav-card" onclick="showPage('dashboard')">
-                        <div class="nav-card-icon purple">
-                            <i class="fas fa-chart-bar"></i>
+                    <!-- ADDED GFR NAV CARD -->
+                    <div class="nav-card" onclick="showPage('gfr')">
+                        <div class="nav-card-icon orange">
+                            <i class="fas fa-calculator"></i>
                         </div>
                         <div>
-                            <div class="nav-card-title">Dashboard</div>
-                            <div class="nav-card-desc">View statistics</div>
+                            <div class="nav-card-title">eGFR Calculator</div>
+                            <div class="nav-card-desc">Kidney function tool</div>
                         </div>
                     </div>
                 </div>
@@ -821,17 +909,77 @@
                 </button>
             </div>
 
-            <!-- Dashboard Page -->
-            <div id="dashboardPage" class="page">
+            <!-- NEW eGFR CALCULATOR PAGE -->
+            <div id="gfrPage" class="page">
                 <a href="#" class="back-btn" onclick="showPage('home')">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
-                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">Statistics</h2>
-                <div style="text-align:center; padding:40px; color:var(--text-secondary);">
-                    <i class="fas fa-chart-pie" style="font-size:3rem; margin-bottom:20px; display:block; opacity:0.5;"></i>
-                    <p>Detailed charts available in desktop view.</p>
+                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">eGFR Calculator</h2>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Kidney Function</div>
+                    </div>
+                    <div class="card-content">
+                        <!-- Formula Selection -->
+                        <div class="form-group">
+                            <label>Select Formula</label>
+                            <div class="radio-group">
+                                <div class="radio-option selected" onclick="selectFormula('CKD-EPI', this)">CKD-EPI (2021)</div>
+                                <div class="radio-option" onclick="selectFormula('MDRD', this)">MDRD</div>
+                                <div class="radio-option" onclick="selectFormula('Cockcroft', this)">Cockcroft–Gault</div>
+                                <input type="hidden" id="selectedFormula" value="CKD-EPI">
+                            </div>
+                        </div>
+
+                        <!-- Inputs -->
+                        <div class="form-group">
+                            <label>Age (Years)</label>
+                            <input type="number" id="calcAge" placeholder="e.g. 45" inputmode="numeric">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <select id="calcSex">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Serum Creatinine</label>
+                            <div class="input-group-inline">
+                                <div class="input-wrapper">
+                                    <input type="number" id="calcCreatinine" placeholder="0.0 - 10.0" step="0.01" inputmode="decimal">
+                                </div>
+                                <select id="calcUnit" style="width: 110px;">
+                                    <option value="mgdl">mg/dL</option>
+                                    <option value="umol">µmol/L</option>
+                                </select>
+                            </div>
+                            <div id="creatinineWarning" class="error-msg"></div>
+                        </div>
+
+                        <!-- Weight (Only for Cockcroft) -->
+                        <div class="form-group hidden" id="weightGroup">
+                            <label>Weight (kg) <span style="font-weight:400; font-size:0.8rem; color:#666;">(Required for Cockcroft–Gault)</span></label>
+                            <input type="number" id="calcWeight" placeholder="e.g. 75" inputmode="numeric">
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <button class="btn" onclick="calculateEGFR()">Calculate eGFR</button>
+
+                        <!-- Results -->
+                        <div id="resultCard" class="result-card">
+                            <div class="result-value" id="resultValue">--</div>
+                            <div class="result-unit" id="resultUnit">mL/min/1.73m²</div>
+                            <div id="ckdBadge" class="ckd-badge hidden">Stage --</div>
+                            <div id="resultNote" class="result-note" style="margin-top: 15px; font-size: 0.9rem; color: #64748b; font-style: italic;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </main>
 
         <!-- Footer -->
@@ -903,7 +1051,6 @@
             });
         }
 
-        // CRITICAL FIX: This function now waits for DB write to finish before returning
         async function updateRecord(id, updates) {
             const database = await getDB();
             return new Promise((resolve, reject) => {
@@ -920,11 +1067,8 @@
                         const putRequest = objectStore.put(updatedRecord);
                         
                         putRequest.onsuccess = () => {
-                            // Update local state only AFTER DB confirms save
                             const index = records.findIndex(r => r.id === id);
                             if (index !== -1) {
-                                // We must replace the object in the array, not mutate it in place 
-                                // to ensure reactivity if the framework supported it (though here we just refresh)
                                 records[index] = { ...updatedRecord };
                             }
                             resolve(updatedRecord);
@@ -1197,6 +1341,125 @@
             }, 3500);
         }
 
+        // === GFR CALCULATOR LOGIC ===
+        let currentFormula = 'CKD-EPI';
+
+        function selectFormula(formula, element) {
+            currentFormula = formula;
+            
+            // Update UI
+            document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('selectedFormula').value = formula;
+
+            // Show/Hide Weight
+            const weightGroup = document.getElementById('weightGroup');
+            if (formula === 'Cockcroft') {
+                weightGroup.classList.remove('hidden');
+            } else {
+                weightGroup.classList.add('hidden');
+            }
+
+            // Hide previous results
+            document.getElementById('resultCard').classList.remove('visible');
+        }
+
+        function calculateEGFR() {
+            // 1. Get Inputs
+            const age = parseFloat(document.getElementById('calcAge').value);
+            const sex = document.getElementById('calcSex').value;
+            let scr = parseFloat(document.getElementById('calcCreatinine').value);
+            const unit = document.getElementById('calcUnit').value;
+            const weight = parseFloat(document.getElementById('calcWeight').value); // Only used for Cockcroft
+
+            // 2. Validation
+            const warningEl = document.getElementById('creatinineWarning');
+            warningEl.style.display = 'none';
+
+            if (!age || !scr) {
+                showToast('error', 'Please enter Age and Creatinine');
+                return;
+            }
+
+            if (age < 0 || age > 120) {
+                showToast('error', 'Please enter a valid Age (0-120)');
+                return;
+            }
+
+            // Check Unit Conversion (mg/dL to µmol/L factor ~ 88.4)
+            if (unit === 'umol') {
+                scr = scr / 88.4;
+            }
+
+            // Extreme Value Warning
+            if (scr > 10 || scr < 0.2) {
+                warningEl.textContent = `Warning: Creatinine value (${scr.toFixed(2)} mg/dL) seems unusual.`;
+                warningEl.style.display = 'block';
+            }
+
+            // 3. Formulas
+            let eGFR = 0;
+            let displayUnit = 'mL/min/1.73m²';
+            let stage = '';
+            let stageClass = '';
+            let note = '';
+
+            // Formula Constants for CKD-EPI (2021) - Simplified (assuming non-black per clean UI req)
+            // Male: k=0.9, a=-0.302
+            // Female: k=0.7, a=-0.241
+            const k = (sex === 'male') ? 0.9 : 0.7;
+            const a = (sex === 'male') ? -0.302 : -0.241;
+
+            if (currentFormula === 'CKD-EPI') {
+                eGFR = 142 * Math.pow(Math.min(scr/k, 1), a) * Math.pow(Math.max(scr/k, 1), -1.200) * Math.pow(0.9938, age);
+                if (sex === 'female') eGFR *= 1.012;
+                note = "Recommended for CKD staging";
+            } 
+            else if (currentFormula === 'MDRD') {
+                // MDRD (4-variable) - Simplified
+                eGFR = 175 * Math.pow(scr, -1.154) * Math.pow(age, -0.203);
+                if (sex === 'female') eGFR *= 0.742;
+                note = "Recommended for CKD staging";
+            } 
+            else if (currentFormula === 'Cockcroft') {
+                if (!weight) {
+                    showToast('error', 'Weight is required for Cockcroft–Gault');
+                    document.getElementById('calcWeight').focus();
+                    return;
+                }
+                displayUnit = 'mL/min'; // Cockcroft is not BSA adjusted
+                eGFR = ((140 - age) * weight) / (72 * scr);
+                if (sex === 'female') eGFR *= 0.85;
+                note = "Recommended for drug dose adjustment";
+            }
+
+            // 4. Determine CKD Stage (if applicable)
+            if (currentFormula !== 'Cockcroft') {
+                if (eGFR >= 90) { stage = 'G1 (Normal)'; stageClass = 'stage-g1'; }
+                else if (eGFR >= 60) { stage = 'G2 (Mild)'; stageClass = 'stage-g2'; }
+                else if (eGFR >= 45) { stage = 'G3a (Moderate)'; stageClass = 'stage-g3a'; }
+                else if (eGFR >= 30) { stage = 'G3b (Mod-Severe)'; stageClass = 'stage-g3b'; }
+                else if (eGFR >= 15) { stage = 'G4 (Severe)'; stageClass = 'stage-g4'; }
+                else { stage = 'G5 (Kidney Failure)'; stageClass = 'stage-g5'; }
+            }
+
+            // 5. Display Results
+            document.getElementById('resultValue').textContent = eGFR.toFixed(1);
+            document.getElementById('resultUnit').textContent = displayUnit;
+            document.getElementById('resultNote').textContent = note;
+
+            const badge = document.getElementById('ckdBadge');
+            if (stage) {
+                badge.textContent = stage;
+                badge.className = `ckd-badge ${stageClass}`;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            document.getElementById('resultCard').classList.add('visible');
+        }
+
         // INITIALIZATION
         async function initApp() {
             try {
@@ -1223,6 +1486,8 @@
         window.syncAllRecords = syncAllRecords;
         window.exportToCSV = exportToCSV;
         window.updateTotalAmount = updateTotalAmount;
+        window.selectFormula = selectFormula;
+        window.calculateEGFR = calculateEGFR;
 
         // Start
         initApp();
