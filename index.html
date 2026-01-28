@@ -676,8 +676,8 @@
                                     <label class="required">Gender</label>
                                     <select id="gender" required>
                                         <option value="">Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
+                                        <option value="ذكر">ذكر</option>
+                                        <option value="انثى">انثى</option>
                                     </select>
                                 </div>
                             </div>
@@ -687,17 +687,30 @@
                                 <label class="required">Diagnosis</label>
                                 <select id="diagnosis" required>
                                     <option value="">Select Diagnosis</option>
+                                    <option value="Acute mastoiditis">Acute mastoiditis</option>
+                                    <option value="Acute rhinosinusitis due to intubation">Acute rhinosinusitis due to intubation</option>
+                                    <option value="Bacterial meningitis">Bacterial meningitis</option>
+                                    <option value="Contaminated blast injury">Contaminated blast injury</option>
+                                    <option value="Gangrenous cellulitis">Gangrenous cellulitis</option>
+                                    <option value="HAP post-op / ventilator-associated">HAP post-op / ventilator-associated</option>
+                                    <option value="Infective bronchiectasis exacerbation">Infective bronchiectasis exacerbation</option>
+                                    <option value="Lung abscess">Lung abscess</option>
+                                    <option value="NVE – acute presentation">NVE – acute presentation</option>
+                                    <option value="Neutropenic sepsis">Neutropenic sepsis</option>
+                                    <option value="Pleural empyema">Pleural empyema</option>
+                                    <option value="Proven acute pancreatitis">Proven acute pancreatitis</option>
+                                    <option value="Pyogenic liver abscess">Pyogenic liver abscess</option>
+                                    <option value="Radical resection">Radical resection</option>
+                                    <option value="Severe CAP admitted to ICU">Severe CAP admitted to ICU</option>
+                                    <option value="Severe diabetic foot infection">Severe diabetic foot infection</option>
+                                    <option value="Severe secondary peritonitis">Severe secondary peritonitis</option>
                                     <option value="Sepsis">Sepsis</option>
-                                    <option value="Pneumonia">Pneumonia</option>
-                                    <option value="Meningitis">Meningitis</option>
-                                    <option value="UTI">UTI</option>
-                                    <option value="Intra-abdominal Infection">Intra-abdominal Infection</option>
-                                    <option value="Skin/Soft Tissue Infection">Skin/Soft Tissue Infection</option>
-                                    <option value="Other">Other</option>
+                                    <option value="Surgical site infection">Surgical site infection</option>
+                                    <option value="Others (specify)">Others (specify)</option>
                                 </select>
                             </div>
 
-                            <!-- DOSING FIELD MOVED HERE (Below Diagnosis) -->
+                            <!-- DOSING FIELD (Below Diagnosis) -->
                             <div class="form-group">
                                 <label class="required">Dosing</label>
                                 <select id="dosing" required>
@@ -707,7 +720,7 @@
                                 </select>
                             </div>
 
-                            <!-- Sensitivity Test / Culture (Renamed from Allergy) -->
+                            <!-- Sensitivity Test / Culture (نعم / كلا) -->
                             <div class="form-group">
                                 <label class="required" style="color: var(--danger-color);">Sensitivity Test / Culture</label>
                                 <select id="sensitivityTest" required style="border-color: var(--danger-color); background-color: #fff5f5;">
@@ -727,9 +740,10 @@
                                     <label class="required">Frequency</label>
                                     <select id="frequency" required>
                                         <option value="">Select</option>
-                                        <option value="q8h">Every 8 hours</option>
-                                        <option value="q12h">Every 12 hours</option>
-                                        <option value="q24h">Once daily</option>
+                                        <option value="8">8</option>
+                                        <option value="12">12</option>
+                                        <option value="24">24</option>
+                                        <option value="48">48</option>
                                     </select>
                                 </div>
                             </div>
@@ -787,9 +801,11 @@
                                     <th>Date</th>
                                     <th>Patient</th>
                                     <th>Age</th>
+                                    <th>Gender</th>
                                     <th>Diagnosis</th>
                                     <th>Dosing</th>
-                                    <th>Sensitivity</th> <!-- New Column -->
+                                    <th>Sensitivity</th>
+                                    <th>Freq</th>
                                     <th>Total</th>
                                     <th>Action</th>
                                 </tr>
@@ -832,8 +848,9 @@
     <script>
         /* Meropenem Tracking System JS - Responsive Version */
 
-        // CONFIGURATION
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5l4v4g9cOZaJDQMrcx4ircKQR_vyvQOiCoKmw9x6Ixmw0z6lblsOPwvqjr2Wd-5CX/exec';
+        // CONFIGURATION - UPDATED URL
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwI12_KSHQ95cew4Q6f9W9je2_lCSgifqxDFayupc7deCypjUrZN6ROL66GzIB_elJH/exec';
+        
         const DB_NAME = 'MeropenemTrackerDB';
         const DB_VERSION = 1;
         const STORE_NAME = 'submissions';
@@ -934,11 +951,11 @@
             return {
                 patientName: document.getElementById('patientName').value.trim(),
                 age: parseInt(document.getElementById('age').value) || 0,
-                gender: document.getElementById('gender').value,
+                gender: document.getElementById('gender').value, // Now Arabic: ذكر / انثى
                 diagnosis: document.getElementById('diagnosis').value,
                 dosing: document.getElementById('dosing').value,
-                sensitivityTest: document.getElementById('sensitivityTest').value, // Updated ID
-                frequency: document.getElementById('frequency').value,
+                sensitivityTest: document.getElementById('sensitivityTest').value, // Arabic: نعم / كلا
+                frequency: document.getElementById('frequency').value, // Numbers: 8, 12, 24, 48
                 duration: parseInt(document.getElementById('duration').value) || 0,
                 pharmacistId: document.getElementById('pharmacistId').value.trim(),
                 meropenem1gQuantity: m1g,
@@ -1008,12 +1025,12 @@
                     gender: record.gender,
                     diagnosis: record.diagnosis,
                     dosing: record.dosing,
-                    sensitivityTest: record.sensitivityTest, // Updated field
-                    meropenem1gQuantity: record.meropenem1gQuantity,
-                    meropenem0_5gQuantity: record.meropenem0_5gQuantity,
+                    sensitivityTest: record.sensitivityTest,
                     frequency: record.frequency,
                     duration: record.duration,
                     pharmacistId: record.pharmacistId || '',
+                    meropenem1gQuantity: record.meropenem1gQuantity,
+                    meropenem0_5gQuantity: record.meropenem0_5gQuantity,
                     syncStatus: 'Synced',
                 };
 
@@ -1054,7 +1071,7 @@
         function displayRecords() {
             const tbody = document.getElementById('recordsBody');
             if (records.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; font-size:1.1rem;">No records found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px; font-size:1.1rem;">No records found</td></tr>';
                 return;
             }
 
@@ -1065,9 +1082,11 @@
                         <div style="font-weight:bold; font-size:1rem;">${r.patientName}</div>
                     </td>
                     <td>${r.age}</td>
+                    <td>${r.gender}</td>
                     <td>${r.diagnosis}</td>
                     <td>${r.dosing}</td>
                     <td><span class="badge ${r.sensitivityTest === 'نعم' ? 'success' : 'pending'}">${r.sensitivityTest}</span></td>
+                    <td>${r.frequency}</td>
                     <td style="font-weight:bold; color:var(--midnight-primary);">${r.totalAmount}g</td>
                     <td>
                         <button class="btn btn-danger" onclick="deleteRecordHandler(${r.id})"><i class="fas fa-trash"></i></button>
@@ -1098,9 +1117,9 @@
 
         function exportToCSV() {
             if (records.length === 0) return showToast('info', 'No data to export');
-            const headers = ['Date', 'Patient', 'Age', 'Gender', 'Diagnosis', 'Dosing', 'Sensitivity', 'Total(g)', 'Status'];
+            const headers = ['Date', 'Patient', 'Age', 'Gender', 'Diagnosis', 'Dosing', 'Sensitivity', 'Frequency', 'Total(g)', 'Status'];
             const rows = records.map(r => [
-                r.createdAt, r.patientName, r.age, r.gender, r.diagnosis, r.dosing, r.sensitivityTest, r.totalAmount, r.synced ? 'Synced' : 'Pending'
+                r.createdAt, r.patientName, r.age, r.gender, r.diagnosis, r.dosing, r.sensitivityTest, r.frequency, r.totalAmount, r.synced ? 'Synced' : 'Pending'
             ]);
             
             let csv = headers.join(',') + '\n' + rows.map(r => r.join(',')).join('\n');
