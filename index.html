@@ -848,7 +848,7 @@
     <script>
         /* Meropenem Tracking System JS - Responsive Version */
 
-        // CONFIGURATION - UPDATED URL
+        // CONFIGURATION
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwI12_KSHQ95cew4Q6f9W9je2_lCSgifqxDFayupc7deCypjUrZN6ROL66GzIB_elJH/exec';
         
         const DB_NAME = 'MeropenemTrackerDB';
@@ -951,11 +951,11 @@
             return {
                 patientName: document.getElementById('patientName').value.trim(),
                 age: parseInt(document.getElementById('age').value) || 0,
-                gender: document.getElementById('gender').value, // Now Arabic: ذكر / انثى
+                gender: document.getElementById('gender').value,
                 diagnosis: document.getElementById('diagnosis').value,
                 dosing: document.getElementById('dosing').value,
-                sensitivityTest: document.getElementById('sensitivityTest').value, // Arabic: نعم / كلا
-                frequency: document.getElementById('frequency').value, // Numbers: 8, 12, 24, 48
+                sensitivityTest: document.getElementById('sensitivityTest').value,
+                frequency: document.getElementById('frequency').value,
                 duration: parseInt(document.getElementById('duration').value) || 0,
                 pharmacistId: document.getElementById('pharmacistId').value.trim(),
                 meropenem1gQuantity: m1g,
@@ -986,23 +986,36 @@
             if(!formData.sensitivityTest) { showToast('error', 'Please select Sensitivity Test result'); return; }
             if(formData.totalAmount === 0) { showToast('error', 'Please add vials'); return; }
 
-            const record = {
-                ...formData,
-                createdAt: new Date().toISOString(),
-                synced: false,
-                syncedAt: null
-            };
-
             const btn = document.getElementById('submitBtn');
             const originalText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
             try {
-                await addRecord(record);
-                showToast('success', 'Record Saved Successfully');
-                if(navigator.onLine) syncRecord(record);
-                
+                // 1. Add to Local DB (Status: pending)
+                const newRecord = await addRecord({
+                    ...formData,
+                    createdAt: new Date().toISOString(),
+                    synced: false,
+                    syncedAt: null
+                });
+
+                // 2. Sync Logic
+                if (navigator.onLine) {
+                    try {
+                        await syncRecord(newRecord);
+                        // If sync succeeds, show ONE success message
+                        showToast('success', 'Record Saved & Synced Successfully');
+                    } catch (syncErr) {
+                        // If sync fails, show ONE pending message
+                        console.error("Sync failed", syncErr);
+                        showToast('info', 'Record Saved Locally (Pending Sync)');
+                    }
+                } else {
+                    showToast('info', 'Saved Locally (No Internet)');
+                }
+
+                // 3. Update UI
                 updatePendingBanner();
                 resetForm();
                 showPage('records');
@@ -1017,34 +1030,34 @@
 
         // SYNC LOGIC
         async function syncRecord(record) {
-            try {
-                const payload = {
-                    timestamp: record.createdAt,
-                    patientName: record.patientName,
-                    age: record.age,
-                    gender: record.gender,
-                    diagnosis: record.diagnosis,
-                    dosing: record.dosing,
-                    sensitivityTest: record.sensitivityTest,
-                    frequency: record.frequency,
-                    duration: record.duration,
-                    pharmacistId: record.pharmacistId || '',
-                    meropenem1gQuantity: record.meropenem1gQuantity,
-                    meropenem0_5gQuantity: record.meropenem0_5gQuantity,
-                    syncStatus: 'Synced',
-                };
+            // DUPLICATE PREVENTION: If already synced, do nothing
+            if (record.synced) return;
 
-                await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                await updateRecord(record.id, { synced: true, syncedAt: new Date().toISOString() });
-            } catch (err) {
-                console.error("Sync failed", err);
-            }
+            const payload = {
+                timestamp: record.createdAt,
+                patientName: record.patientName,
+                age: record.age,
+                gender: record.gender,
+                diagnosis: record.diagnosis,
+                dosing: record.dosing,
+                sensitivityTest: record.sensitivityTest,
+                frequency: record.frequency,
+                duration: record.duration,
+                pharmacistId: record.pharmacistId || '',
+                meropenem1gQuantity: record.meropenem1gQuantity,
+                meropenem0_5gQuantity: record.meropenem0_5gQuantity,
+                syncStatus: 'Synced',
+            };
+
+            await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            // Update local DB to mark as synced
+            await updateRecord(record.id, { synced: true, syncedAt: new Date().toISOString() });
         }
 
         async function syncAllRecords() {
@@ -1052,11 +1065,25 @@
             if (unsynced.length === 0) return showToast('info', 'No pending records to sync');
 
             showToast('info', 'Syncing ' + unsynced.length + ' records...');
+            let successCount = 0;
+
             for (const r of unsynced) {
-                await syncRecord(r);
+                try {
+                    await syncRecord(r);
+                    successCount++;
+                } catch (e) {
+                    console.error("Failed to sync record", r.id, e);
+                }
+                // Small delay between requests to be safe
                 await new Promise(res => setTimeout(res, 500)); 
             }
-            showToast('success', 'Sync Completed');
+
+            if (successCount > 0) {
+                showToast('success', successCount + ' records synced');
+            } else {
+                showToast('error', 'Sync failed. Check connection.');
+            }
+            
             updatePendingBanner();
             displayRecords();
         }
