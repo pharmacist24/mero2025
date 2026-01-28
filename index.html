@@ -4,13 +4,1087 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Track and manage Meropenem dispensing for Baghdad Teaching Hospital">
-    <meta name="theme-color" content="#1e293b">
+    <meta name="theme-color" content="#191970">
     <title>Meropenem Tracking System - Baghdad Teaching Hospital</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Meropenem Tracking System Styles - Midnight Theme */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* Midnight Color Scheme */
+            --midnight-primary: #191970;
+            --midnight-dark: #0f172a;
+            --midnight-darker: #020617;
+
+            --primary-color: #191970;
+            --primary-light: #0f172a;
+            --primary-dark: #020617;
+
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --purple-color: #8b5cf6;
+            --amber-color: #d97706;
+
+            --bg-color: #f8fafc;
+            --bg-gradient-start: #f8fafc;
+            --bg-gradient-mid: #e2e8f0;
+            --bg-gradient-end: #f1f5f9;
+
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #9ca3af;
+
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.08);
+            --shadow-md: 0 6px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+            --shadow-xl: 0 12px 24px rgba(0,0,0,0.2);
+
+            --radius-sm: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.25rem;
+
+            --transition-fast: all 0.2s ease;
+            --transition-normal: all 0.3s ease;
+            --transition-slow: all 0.4s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+        }
+
+        /* LOADING SCREEN */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            margin-left: 20px;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        /* HEADER - 50% SMALLER */
+        .header {
+            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
+            color: white;
+            padding: 0.5rem;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .app-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.2);
+        }
+
+        .app-subtitle {
+            font-size: 0.45rem;
+            color: var(--warning-color);
+            font-weight: 500;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 0.45rem;
+            cursor: default;
+            transition: var(--transition-fast);
+        }
+
+        .connection-status.online {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+        }
+
+        .connection-status.offline {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.75rem;
+            padding-bottom: 2.5rem;
+            min-height: calc(100vh - 100px);
+        }
+
+        .page {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* WELCOME SECTION */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .divider-line {
+            height: 1px;
+            width: 2rem;
+            background: linear-gradient(90deg, transparent, var(--warning-color), transparent);
+        }
+
+        .divider-icon {
+            color: var(--warning-color);
+            font-size: 0.75rem;
+        }
+
+        .welcome-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.5rem;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        /* PENDING BANNER */
+        .pending-banner {
+            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
+            border: 2px solid var(--warning-color);
+            border-radius: var(--radius-md);
+            padding: 0.5rem;
+            margin-bottom: 0.75rem;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .pending-banner.visible {
+            display: block;
+        }
+
+        .pending-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pending-info {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .pending-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            background: var(--warning-color);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pending-count {
+            font-size: 1rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .pending-label {
+            font-size: 0.45rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* NAVIGATION CARDS */
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 0.75rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition-normal);
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .nav-card:active {
+            transform: translateY(-2px);
+        }
+
+        .nav-card-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: white;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        .nav-card-icon.blue {
+            background: linear-gradient(135deg, var(--info-color) 0%, #2563eb 100%);
+        }
+
+        .nav-card-icon.emerald {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+        }
+
+        .nav-card-icon.purple {
+            background: linear-gradient(135deg, var(--purple-color) 0%, #7c3aed 100%);
+        }
+
+        .nav-card-title {
+            font-size: 0.625rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.125rem;
+        }
+
+        .nav-card-desc {
+            font-size: 0.45rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-arrow {
+            color: var(--warning-color);
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            right: 0.75rem;
+        }
+
+        .nav-card:hover .nav-arrow {
+            opacity: 1;
+        }
+
+        /* CARDS */
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 0.75rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
+            color: white;
+            padding: 0.625rem;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .card-title {
+            font-size: 0.625rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-title-large {
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .card-content {
+            padding: 0.75rem;
+        }
+
+        /* TOTAL AMOUNT DISPLAY */
+        .total-amount-display {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--warning-color);
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .vials-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .vial-item {
+            text-align: center;
+        }
+
+        .vial-label {
+            font-size: 0.625rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .vial-count {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--warning-color);
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 0.375rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 0.625rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card.stat-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .stat-card.stat-green {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            color: white;
+        }
+
+        .stat-card.stat-purple {
+            background: linear-gradient(135deg, var(--purple-color) 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .stat-card.stat-amber {
+            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
+            color: white;
+        }
+
+        .stat-icon {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-size: 0.875rem;
+            font-weight: 800;
+            margin-bottom: 0.125rem;
+        }
+
+        .stat-label {
+            font-size: 0.4rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /* FORMS */
+        .form-section {
+            margin-bottom: 0.75rem;
+        }
+
+        .form-section-title {
+            font-size: 0.55rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.625rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+            font-size: 0.475rem;
+            color: var(--text-primary);
+        }
+
+        label.required::after {
+            content: ' *';
+            color: var(--danger-color);
+            margin-left: 0.125rem;
+        }
+
+        label.allergy-label {
+            font-size: 0.5rem;
+            font-weight: 700;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.4375rem 0.5rem;
+            font-size: 0.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-color);
+            color: var(--text-primary);
+            transition: var(--transition-fast);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--warning-color);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.375rem center;
+            background-size: 0.625rem;
+            padding-right: 1.25rem;
+        }
+
+        .allergy-select {
+            border: 3px solid var(--border-color);
+            font-weight: 600;
+            background-color: #fffbeb;
+        }
+
+        .allergy-select:hover {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.3);
+        }
+
+        .frequency-select {
+            border: 2px solid var(--border-color);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.4375rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--info-color) 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-color);
+            border-color: var(--border-color-dark);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .flex-1 {
+            flex: 1;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.45rem;
+        }
+
+        .back-btn:hover {
+            color: var(--text-primary);
+        }
+
+        /* RECORDS TABLE */
+        .table-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 0.75rem;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .records-table thead {
+            background: var(--bg-color);
+            position: sticky;
+            top: 0;
+        }
+
+        .records-table th {
+            padding: 0.4375rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.4375rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .records-table td {
+            padding: 0.4375rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.45rem;
+        }
+
+        .records-table tbody tr:hover {
+            background: var(--bg-color);
+        }
+
+        .records-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.125rem 0.375rem;
+            border-radius: 1rem;
+            font-size: 0.4rem;
+            font-weight: 600;
+        }
+
+        .badge.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+        }
+
+        .badge.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+        }
+
+        /* CHARTS */
+        .chart-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 0.75rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 0.75rem;
+        }
+
+        .chart-title {
+            font-size: 0.625rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .chart-container th {
+            padding: 0.375rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.4375rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .chart-container td {
+            padding: 0.375rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.4rem;
+        }
+
+        .chart-container tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* SEARCH BAR */
+        .search-bar {
+            background: white;
+            padding: 0.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .filter-select {
+            min-width: 75px;
+        }
+
+        /* FOOTER - 50% SMALLER, MIDNIGHT COLOR */
+        .footer {
+            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 50%, var(--midnight-primary) 100%);
+            color: white;
+            text-align: center;
+            padding: 0.375rem;
+            margin-top: auto;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-icon {
+            font-size: 0.5625rem;
+        }
+
+        .footer-hospital {
+            font-size: 0.5625rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .footer-divider {
+            width: 1px;
+            height: 0.75rem;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-credits {
+            font-size: 0.4375rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* TOAST NOTIFICATIONS */
+        .toast-container {
+            position: fixed;
+            top: 0.5rem;
+            right: 0.5rem;
+            z-index: 10000;
+            max-width: 300px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 0.5rem;
+            margin-bottom: 0.25rem;
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s ease-out;
+            border-left: 4px solid;
+        }
+
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger-color);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .toast.info {
+            border-left-color: var(--info-color);
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.45rem;
+            margin-bottom: 0.0625rem;
+        }
+
+        .toast-message {
+            font-size: 0.4375rem;
+            color: var(--text-secondary);
+            opacity: 0.9;
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .connection-status {
+                align-self: flex-end;
+            }
+
+            .app-title {
+                font-size: 0.625rem;
+            }
+
+            .app-subtitle {
+                font-size: 0.375rem;
+            }
+
+            .welcome-title {
+                font-size: 0.875rem;
+            }
+
+            .page-title {
+                font-size: 0.75rem;
+            }
+
+            .nav-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-card {
+                padding: 0.5rem;
+            }
+
+            .nav-card-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+                font-size: 0.625rem;
+            }
+
+            .nav-card-title {
+                font-size: 0.5625rem;
+            }
+
+            .nav-card-desc {
+                font-size: 0.4rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.25rem;
+            }
+
+            .stat-card {
+                padding: 0.5rem;
+            }
+
+            .stat-value {
+                font-size: 0.75rem;
+            }
+
+            .stat-icon {
+                font-size: 0.75rem;
+            }
+
+            .total-amount-display {
+                font-size: 1rem;
+            }
+
+            .vials-container {
+                gap: 0.25rem;
+            }
+
+            .vial-label {
+                font-size: 0.5rem;
+            }
+
+            .vial-count {
+                font-size: 0.75rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .search-input,
+            .filter-select {
+                width: 100%;
+            }
+
+            .records-table {
+                font-size: 0.4rem;
+            }
+
+            .records-table th,
+            .records-table td {
+                padding: 0.25rem;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .toast-container {
+                left: 0.5rem;
+                right: 0.5rem;
+                max-width: none;
+            }
+
+            .footer {
+                padding: 0.25rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .footer-hospital,
+            .footer-credits {
+                font-size: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.5rem;
+                padding-bottom: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-card-icon {
+                width: 1.25rem;
+                height: 1.25rem;
+                font-size: 0.5rem;
+            }
+
+            .card-content {
+                padding: 0.5rem;
+            }
+
+            .logo-icon {
+                width: 1.25rem;
+                height: 1.25rem;
+                font-size: 0.625rem;
+            }
+
+            .btn {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.4375rem;
+            }
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <!-- Loading Screen -->
@@ -180,6 +1254,7 @@
                                         <option value="">Select gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
                                     </select>
                                 </div>
                             </div>
@@ -219,14 +1294,14 @@
                                 </select>
                             </div>
 
-                            <!-- Allergy & Duration -->
+                            <!-- Allergy Test & Duration -->
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label class="required">Sensitivity Test</label>
-                                    <select id="allergyTest" required>
+                                    <label class="required allergy-label">Allergy Test</label>
+                                    <select id="allergyTest" required class="allergy-select">
                                         <option value="">Select result</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
+                                        <option value="Yes" class="allergy-yes">Yes</option>
+                                        <option value="No" class="allergy-no">No</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -237,14 +1312,12 @@
 
                             <!-- Frequency -->
                             <div class="form-group">
-                                <label class="required">Frequency</label>
-                                <select id="frequency" required>
+                                <label class="required">Frequency (Days)</label>
+                                <select id="frequency" required class="frequency-select">
                                     <option value="">Select frequency</option>
-                                    <option value="Every 6 hours (q6h)">Every 6 hours (q6h)</option>
-                                    <option value="Every 8 hours (q8h)">Every 8 hours (q8h)</option>
-                                    <option value="Every 12 hours (q12h)">Every 12 hours (q12h)</option>
-                                    <option value="Every 24 hours (q24h)">Once daily</option>
-                                    <option value="Every 48 hours (q48h)">Every 48 hours (q48h)</option>
+                                    <option value="1">1 day</option>
+                                    <option value="2">2 days</option>
+                                    <option value="3">3 days</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
@@ -360,13 +1433,14 @@
                                 <th>Diagnosis</th>
                                 <th>Allergy</th>
                                 <th>Amount</th>
+                                <th>Frequency</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="recordsBody">
                             <tr id="noRecordsRow">
-                                <td colspan="9">No records yet</td>
+                                <td colspan="12">No records yet</td>
                             </tr>
                         </tbody>
                     </table>
@@ -430,7 +1504,8 @@
             <div class="footer-content">
                 <i class="fas fa-shield-alt footer-icon"></i>
                 <div class="footer-hospital">Baghdad Teaching Hospital</div>
-                <div class="footer-text">Meropenem Tracking System v1.0.0</div>
+                <div class="footer-divider"></div>
+                <div class="footer-credits">MADE BY LUAY</div>
             </div>
         </footer>
 
@@ -438,7 +1513,920 @@
         <div class="toast-container" id="toastContainer"></div>
     </div>
 
-    <!-- Load JavaScript -->
-    <script src="app.js"></script>
+    <script>
+        /* Meropenem Tracking System JavaScript - Updated Version
+         * Baghdad Teaching Hospital Pharmacy Department
+         * Full functionality including IndexedDB storage, Google Sheets sync, and responsive design
+         */
+
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+
+        // Update this URL with your deployed Google Apps Script URL
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5l4v4g9cOZaJDQMrcx4ircKQR_vyvQOiCoKmw9x6Ixmw0z6lblsOPwvqjr2Wd-5CX/exec';
+
+        // Database Configuration
+        const DB_NAME = 'MeropenemTrackerDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'submissions';
+
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+
+        let db = null;
+        let records = [];
+
+        // ============================================
+        // DATABASE OPERATIONS
+        // ============================================
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onerror = () => {
+                    console.error('Failed to open IndexedDB:', request.error);
+                    showToast('error', 'Failed to initialize database');
+                    reject(request.error);
+                };
+
+                request.onupgradeneeded = (event) => {
+                    const database = event.target.result;
+
+                    if (!database.objectStoreNames.contains(STORE_NAME)) {
+                        const objectStore = database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                        objectStore.createIndex('synced', 'synced', { unique: false });
+                        objectStore.createIndex('createdAt', 'createdAt', { unique: false });
+                        objectStore.createIndex('patientName', 'patientName', { unique: false });
+                    }
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    console.log('Database initialized successfully');
+                    resolve(db);
+                };
+
+                request.onerror = (event) => {
+                    console.error('Database initialization error:', event.target.error);
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        function getDB() {
+            return new Promise((resolve, reject) => {
+                if (db) {
+                    resolve(db);
+                    return;
+                }
+
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    resolve(db);
+                };
+
+                request.onerror = (event) => {
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        async function addRecord(record) {
+            try {
+                const database = await getDB();
+                const transaction = database.transaction([STORE_NAME], 'readwrite');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const request = objectStore.add(record);
+
+                return new Promise((resolve, reject) => {
+                    request.onsuccess = () => {
+                        const newRecord = { ...record, id: request.result };
+                        records.unshift(newRecord);
+                        resolve(newRecord);
+                    };
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                });
+            } catch (error) {
+                console.error('Failed to add record:', error);
+                throw error;
+            }
+        }
+
+        async function updateRecord(id, updates) {
+            try {
+                const database = await getDB();
+                const transaction = database.transaction([STORE_NAME], 'readwrite');
+                const objectStore = transaction.objectStore(STORE_NAME);
+
+                const getRequest = objectStore.get(id);
+
+                getRequest.onsuccess = () => {
+                    const data = getRequest.result;
+                    if (data) {
+                        const updatedRecord = { ...data, ...updates };
+                        const putRequest = objectStore.put(updatedRecord);
+
+                        putRequest.onsuccess = () => {
+                            console.log('Record updated:', id);
+                            const index = records.findIndex(r => r.id === id);
+                            if (index !== -1) {
+                                records[index] = updatedRecord;
+                            }
+                        };
+
+                        putRequest.onerror = (event) => {
+                            console.error('Failed to update record:', event.target.error);
+                        };
+                    }
+                };
+
+                getRequest.onerror = (event) => {
+                    console.error('Failed to get record:', event.target.error);
+                };
+            } catch (error) {
+                console.error('Failed to update record:', error);
+                throw error;
+            }
+        }
+
+        async function deleteRecord(id) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const database = await getDB();
+                    const transaction = database.transaction([STORE_NAME], 'readwrite');
+                    const objectStore = transaction.objectStore(STORE_NAME);
+                    const request = objectStore.delete(id);
+
+                    request.onsuccess = () => {
+                        console.log('Record deleted:', id);
+                        records = records.filter(r => r.id !== id);
+                        resolve();
+                    };
+
+                    request.onerror = (event) => {
+                        console.error('Failed to delete record:', event.target.error);
+                        reject(event.target.error);
+                    };
+                } catch (error) {
+                    console.error('Delete record error:', error);
+                    reject(error);
+                }
+            });
+        }
+
+        async function getAllRecords() {
+            try {
+                const database = await getDB();
+                const transaction = database.transaction([STORE_NAME], 'readonly');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const request = objectStore.getAll();
+
+                return new Promise((resolve, reject) => {
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                });
+            } catch (error) {
+                console.error('Failed to get records:', error);
+                throw error;
+            }
+        }
+
+        async function getUnsyncedRecords() {
+            try {
+                const database = await getDB();
+                const transaction = database.transaction([STORE_NAME], 'readonly');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const index = objectStore.index('synced');
+                const request = index.getAll(false);
+
+                return new Promise((resolve, reject) => {
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                });
+            } catch (error) {
+                console.error('Failed to get unsynced records:', error);
+                throw error;
+            }
+        }
+
+        async function loadRecords() {
+            try {
+                records = await getAllRecords();
+                updateStats();
+                displayRecords();
+                updatePendingBanner();
+            } catch (error) {
+                console.error('Failed to load records:', error);
+                showToast('error', 'Failed to load records');
+            }
+        }
+
+        // ============================================
+        // GOOGLE SHEETS INTEGRATION
+        // ============================================
+
+        async function syncToGoogleSheets(record) {
+            try {
+                const recordData = {
+                    timestamp: record.createdAt,
+                    patientName: record.patientName,
+                    age: record.age,
+                    gender: record.gender,
+                    diagnosis: record.diagnosis,
+                    meropenem1gQuantity: record.meropenem1gQuantity,
+                    meropenem0_5gQuantity: record.meropenem0_5gQuantity,
+                    frequency: record.frequency,
+                    duration: record.duration,
+                    pharmacistId: record.pharmacistId || '',
+                    allergyTest: record.allergyTest,
+                    syncStatus: 'Synced',
+                };
+
+                console.log('Sending to Google Sheets:', recordData);
+
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(recordData)
+                });
+
+                console.log('Response received:', response.status);
+
+                return true;
+            } catch (error) {
+                console.error('Sync error:', error);
+                return false;
+            }
+        }
+
+        async function syncRecord(record) {
+            try {
+                const synced = await syncToGoogleSheets(record);
+                if (synced) {
+                    await updateRecord(record.id, {
+                        synced: true,
+                        syncedAt: new Date().toISOString()
+                    });
+                    console.log('Record synced successfully:', record.id);
+                }
+                return synced;
+            } catch (error) {
+                console.error('Sync record error:', error);
+                return false;
+            }
+        }
+
+        async function syncAllRecords() {
+            try {
+                const unsyncedRecords = await getUnsyncedRecords();
+
+                if (unsyncedRecords.length === 0) {
+                    showToast('info', 'No pending records to sync');
+                    return;
+                }
+
+                showToast('info', 'Syncing ' + unsyncedRecords.length + ' record(s)...');
+
+                let syncedCount = 0;
+                for (const record of unsyncedRecords) {
+                    const synced = await syncRecord(record);
+                    if (synced) {
+                        syncedCount++;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+
+                await loadRecords();
+
+                if (syncedCount > 0) {
+                    showToast('success', syncedCount + ' record(s) synced successfully');
+                } else {
+                    showToast('warning', 'Failed to sync records. Please try again.');
+                }
+            } catch (error) {
+                console.error('Sync all records error:', error);
+                showToast('error', 'Failed to sync records');
+            }
+        }
+
+        // ============================================
+        // FORM HANDLING
+        // ============================================
+
+        function validateForm() {
+            const errors = [];
+
+            const patientName = document.getElementById('patientName').value.trim();
+            const age = parseInt(document.getElementById('age').value) || 0;
+            const gender = document.getElementById('gender').value;
+            const diagnosis = document.getElementById('diagnosis').value;
+            const allergyTest = document.getElementById('allergyTest').value;
+            const frequency = document.getElementById('frequency').value;
+            const duration = parseInt(document.getElementById('duration').value) || 0;
+            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
+            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
+
+            if (!patientName) {
+                errors.push('Patient name is required');
+            }
+
+            if (!age || age <= 0) {
+                errors.push('Please enter a valid age');
+            }
+
+            if (!gender) {
+                errors.push('Please select a gender');
+            }
+
+            if (!diagnosis) {
+                errors.push('Please select a diagnosis');
+            }
+
+            if (!allergyTest) {
+                errors.push('Please select allergy test result');
+            }
+
+            if (!frequency) {
+                errors.push('Please select frequency');
+            }
+
+            if (!duration || duration <= 0) {
+                errors.push('Please enter a valid duration in days');
+            }
+
+            const totalAmount = meropenem1gQuantity + (meropenem0_5gQuantity * 0.5);
+
+            if (totalAmount === 0) {
+                errors.push('Please dispense at least one vial');
+            }
+
+            return {
+                isValid: errors.length === 0,
+                errors: errors
+            };
+        }
+
+        function getFormData() {
+            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
+            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
+
+            return {
+                patientName: document.getElementById('patientName').value.trim(),
+                age: parseInt(document.getElementById('age').value) || 0,
+                gender: document.getElementById('gender').value,
+                diagnosis: document.getElementById('diagnosis').value,
+                allergyTest: document.getElementById('allergyTest').value,
+                meropenem1gQuantity: meropenem1gQuantity,
+                meropenem0_5gQuantity: meropenem0_5gQuantity,
+                frequency: document.getElementById('frequency').value,
+                duration: parseInt(document.getElementById('duration').value) || 0,
+                pharmacistId: document.getElementById('pharmacistId').value.trim(),
+                totalAmount: meropenem1gQuantity + (meropenem0_5gQuantity * 0.5),
+            };
+        }
+
+        function calculateTotalAmount() {
+            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
+            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
+            return meropenem1gQuantity + (meropenem0_5gQuantity * 0.5);
+        }
+
+        function updateTotalAmount() {
+            const total = calculateTotalAmount();
+            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
+            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
+
+            document.getElementById('totalAmountDisplay').textContent = total.toFixed(1) + ' g';
+            document.getElementById('total1gVials').textContent = meropenem1gQuantity;
+            document.getElementById('total05gVials').textContent = meropenem0_5gQuantity;
+        }
+
+        function resetForm() {
+            document.getElementById('recordForm').reset();
+            updateTotalAmount();
+        }
+
+        async function submitRecord(event) {
+            event.preventDefault();
+
+            const validation = validateForm();
+            if (!validation.isValid) {
+                showToast('error', validation.errors[0] || 'Please fill in all required fields');
+                return;
+            }
+
+            const formData = getFormData();
+            const record = {
+                ...formData,
+                createdAt: new Date().toISOString(),
+                synced: false,
+                syncedAt: null
+            };
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            try {
+                const newRecord = await addRecord(record);
+
+                if (navigator.onLine) {
+                    showToast('success', 'Record saved. Syncing to Google Sheets...');
+                    const synced = await syncRecord(newRecord);
+                    if (synced) {
+                        showToast('success', 'Record synced to Google Sheets');
+                    } else {
+                        showToast('info', 'Record saved locally. Will sync when possible');
+                    }
+                } else {
+                    showToast('info', 'Record saved locally. Will sync when online');
+                }
+
+                updateStats();
+                updatePendingBanner();
+
+                resetForm();
+                showPage('records');
+            } catch (error) {
+                console.error('Submit error:', error);
+                showToast('error', 'Failed to submit record');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Submit Record';
+            }
+        }
+
+        // ============================================
+        // UI UPDATES
+        // ============================================
+
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            const targetPage = document.getElementById(pageName + 'Page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+
+                if (pageName === 'record') {
+                    updateTotalAmount();
+                } else if (pageName === 'records') {
+                    displayRecords();
+                } else if (pageName === 'dashboard') {
+                    updateDashboardCharts();
+                    updateDashboardStats();
+                }
+            }
+        }
+
+        function displayRecords() {
+            const filterStatus = document.getElementById('filterStatus')?.value || 'all';
+            const searchQuery = document.getElementById('searchInput')?.value?.toLowerCase()?.trim() || '';
+
+            let filteredRecords = [...records];
+
+            if (filterStatus !== 'all') {
+                const isSynced = filterStatus === 'synced';
+                filteredRecords = records.filter(r => r.synced === isSynced);
+            }
+
+            if (searchQuery) {
+                filteredRecords = filteredRecords.filter(r =>
+                    r.patientName.toLowerCase().includes(searchQuery) ||
+                    r.diagnosis.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            filteredRecords.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            const tbody = document.getElementById('recordsBody');
+
+            if (!tbody) return;
+
+            if (filteredRecords.length === 0) {
+                tbody.innerHTML = `
+                    <tr id="noRecordsRow">
+                        <td colspan="12" style="text-align: center; padding: 1rem; color: #64748b;">
+                            <i class="fas fa-inbox" style="font-size: 1rem; margin-bottom: 0.25rem;"></i>
+                            <div style="font-size: 0.4rem;">No records found</div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = filteredRecords.map(record => {
+                    const isSynced = record.synced;
+                    const badgeClass = isSynced ? 'success' : 'pending';
+                    const badgeText = isSynced ? '✓ Synced' : '⏳ Pending';
+
+                    return `
+                        <tr>
+                            <td>${formatDate(record.createdAt)}</td>
+                            <td>
+                                <div style="font-weight: 600;">${record.patientName}</div>
+                            </td>
+                            <td>${record.age}</td>
+                            <td>${record.gender}</td>
+                            <td>${record.diagnosis}</td>
+                            <td>${record.allergyTest === 'Yes' ? '⚠ Yes' : '✓ No'}</td>
+                            <td>${record.totalAmount.toFixed(1)}g</td>
+                            <td>${record.frequency}</td>
+                            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                            <td>
+                                <button class="btn btn-danger" style="padding: 0.25rem;" onclick="deleteRecordHandler(${record.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            updateStats();
+        }
+
+        async function deleteRecordHandler(id) {
+            if (!confirm('Are you sure you want to delete this record?')) {
+                return;
+            }
+
+            try {
+                await deleteRecord(id);
+                showToast('success', 'Record deleted successfully');
+                await loadRecords();
+                displayRecords();
+            } catch (error) {
+                console.error('Delete error:', error);
+                showToast('error', 'Failed to delete record');
+            }
+        }
+
+        function updateStats() {
+            const total = records.length;
+            const synced = records.filter(r => r.synced).length;
+            const pending = records.filter(r => !r.synced).length;
+            const totalMeropenem = records.reduce((sum, r) => sum + r.totalAmount, 0).toFixed(1);
+
+            const totalRecordsEl = document.getElementById('totalRecords');
+            const syncedRecordsEl = document.getElementById('syncedRecords');
+            const totalMeropenemEl = document.getElementById('totalMeropenem');
+            const pendingRecordsEl = document.getElementById('pendingRecords');
+
+            if (totalRecordsEl) totalRecordsEl.textContent = total;
+            if (syncedRecordsEl) syncedRecordsEl.textContent = synced;
+            if (totalMeropenemEl) totalMeropenemEl.textContent = totalMeropenem + 'g';
+            if (pendingRecordsEl) pendingRecordsEl.textContent = pending;
+        }
+
+        function updateDashboardStats() {
+            const total = records.length;
+            const synced = records.filter(r => r.synced).length;
+            const pending = records.filter(r => !r.synced).length;
+            const totalMeropenem = records.reduce((sum, r) => sum + r.totalAmount, 0).toFixed(1);
+
+            const dashTotalRecordsEl = document.getElementById('dashTotalRecords');
+            const dashSyncedRecordsEl = document.getElementById('dashSyncedRecords');
+            const dashTotalAmountEl = document.getElementById('dashTotalAmount');
+            const dashPendingCountEl = document.getElementById('dashPendingCount');
+
+            if (dashTotalRecordsEl) dashTotalRecordsEl.textContent = total;
+            if (dashSyncedRecordsEl) dashSyncedRecordsEl.textContent = synced;
+            if (dashTotalAmountEl) dashTotalAmountEl.textContent = totalMeropenem + 'g';
+            if (dashPendingCountEl) dashPendingCountEl.textContent = pending;
+        }
+
+        function updatePendingBanner() {
+            const pending = records.filter(r => !r.synced).length;
+            const banner = document.getElementById('pendingBanner');
+            const countElement = document.getElementById('pendingCount');
+
+            if (pending > 0) {
+                banner.classList.add('visible');
+                countElement.textContent = pending;
+            } else {
+                banner.classList.remove('visible');
+            }
+        }
+
+        function updateDashboardCharts() {
+            updateDiagnosisChart();
+            updateGenderChart();
+        }
+
+        function updateDiagnosisChart() {
+            const diagnosisCounts = {};
+
+            records.forEach(r => {
+                diagnosisCounts[r.diagnosis] = (diagnosisCounts[r.diagnosis] || 0) + 1;
+            });
+
+            const maxCount = Math.max(...Object.values(diagnosisCounts), 1);
+            const sortedDiagnoses = Object.entries(diagnosisCounts).sort((a, b) => b[1] - a[1]);
+
+            const chartContainer = document.getElementById('diagnosisChart');
+
+            if (!chartContainer) return;
+
+            if (Object.keys(diagnosisCounts).length === 0) {
+                chartContainer.innerHTML = '<p style="text-align: center; color: #64748b; padding: 1rem;">No data to display</p>';
+                return;
+            }
+
+            chartContainer.innerHTML = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Diagnosis</th>
+                            <th style="width: 15%;">Count</th>
+                            <th style="width: 20%;">Percentage</th>
+                            <th style="width: 25%;">Bar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedDiagnoses.map(([diagnosis, count]) => {
+                            const percentage = ((count / records.length) * 100).toFixed(1);
+                            const barWidth = (count / maxCount) * 100;
+
+                            return `
+                                <tr>
+                                    <td>${diagnosis}</td>
+                                    <td>${count}</td>
+                                    <td>${percentage}%</td>
+                                    <td>
+                                        <div style="background: linear-gradient(90deg, #3b82f6, #2563eb); width: ${barWidth}%; height: 0.75rem; border-radius: 0.5rem; transition: width 0.3s ease; min-width: 2px;"></div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function updateGenderChart() {
+            const genderCounts = { Male: 0, Female: 0, Other: 0 };
+
+            records.forEach(r => {
+                if (genderCounts.hasOwnProperty(r.gender)) {
+                    genderCounts[r.gender]++;
+                }
+            });
+
+            const total = records.length;
+            const chartContainer = document.getElementById('genderChart');
+
+            if (!chartContainer) return;
+
+            if (total === 0) {
+                chartContainer.innerHTML = '<p style="text-align: center; color: #64748b; padding: 1rem;">No data to display</p>';
+                return;
+            }
+
+            const maxCount = Math.max(...Object.values(genderCounts), 1);
+
+            chartContainer.innerHTML = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Gender</th>
+                            <th style="width: 15%;">Count</th>
+                            <th style="width: 20%;">Percentage</th>
+                            <th style="width: 25%;">Bar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${Object.entries(genderCounts).map(([gender, count]) => {
+                            const percentage = ((count / total) * 100).toFixed(1);
+                            const barWidth = (count / maxCount) * 100;
+
+                            return `
+                                <tr>
+                                    <td>${gender}</td>
+                                    <td>${count}</td>
+                                    <td>${percentage}%</td>
+                                    <td>
+                                        <div style="background: linear-gradient(90deg, #8b5cf6, #7c3aed); width: ${barWidth}%; height: 0.75rem; border-radius: 0.5rem; transition: width 0.3s ease; min-width: 2px;"></div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ============================================
+        // EXPORT TO CSV
+        // ============================================
+
+        function exportToCSV() {
+            if (records.length === 0) {
+                showToast('info', 'No records to export');
+                return;
+            }
+
+            const headers = ['Date', 'Patient Name', 'Age', 'Gender', 'Diagnosis', 'Allergy', 'Total Amount (g)', 'Status', 'Frequency', 'Duration (days)', 'Pharmacist ID'];
+
+            let csv = headers.join(',') + '\\n';
+
+            records.forEach(record => {
+                csv += [
+                    formatDate(record.createdAt),
+                    '"' + record.patientName + '"',
+                    record.age,
+                    record.gender,
+                    '"' + record.diagnosis + '"',
+                    record.allergyTest,
+                    record.totalAmount.toFixed(1),
+                    record.synced ? 'Synced' : 'Pending',
+                    record.frequency,
+                    record.duration,
+                    record.pharmacistId || ''
+                ].join(',') + '\\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'meropenem_records_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('success', 'Records exported to CSV');
+        }
+
+        // ============================================
+        // TOAST NOTIFICATIONS
+        // ============================================
+
+        function showToast(type, message) {
+            const container = document.getElementById('toastContainer');
+
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+
+            let icon = '';
+            switch(type) {
+                case 'success':
+                    icon = '✓';
+                    break;
+                case 'error':
+                    icon = '✗';
+                    break;
+                case 'warning':
+                    icon = '⚠';
+                    break;
+                default:
+                    icon = 'ⓘ';
+            }
+
+            toast.innerHTML = `
+                <div class="toast-title">${icon} ${type.charAt(0).toUpperCase() + type.slice(1)}:</div>
+                <div class="toast-message">${message}</div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    if (container && container.contains(toast)) {
+                        container.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // ============================================
+        // CONNECTION STATUS
+        // ============================================
+
+        function updateConnectionStatus() {
+            const statusBadge = document.getElementById('connectionStatus');
+            const connectionIcon = document.getElementById('connectionIcon');
+            const connectionText = document.getElementById('connectionText');
+            const homeSyncStatus = document.getElementById('homeSyncStatus');
+
+            if (navigator.onLine) {
+                if (statusBadge) statusBadge.className = 'connection-status online';
+                if (connectionIcon) connectionIcon.textContent = '●';
+                if (connectionText) connectionText.textContent = 'Online';
+                if (homeSyncStatus) homeSyncStatus.textContent = 'Synced';
+            } else {
+                if (statusBadge) statusBadge.className = 'connection-status offline';
+                if (connectionIcon) connectionIcon.textContent = '●';
+                if (connectionText) connectionText.textContent = 'Offline';
+                if (homeSyncStatus) homeSyncStatus.textContent = 'Local';
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+
+        function setupEventListeners() {
+            window.addEventListener('online', updateConnectionStatus);
+            window.addEventListener('offline', updateConnectionStatus);
+
+            const inputElements = ['meropenem1gQuantity', 'meropenem0_5gQuantity'];
+            inputElements.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', updateTotalAmount);
+                }
+            });
+
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', displayRecords);
+            }
+
+            const filterSelect = document.getElementById('filterStatus');
+            if (filterSelect) {
+                filterSelect.addEventListener('change', displayRecords);
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+
+        async function initApp() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const app = document.getElementById('app');
+
+            try {
+                await initDB();
+                await loadRecords();
+                setupEventListeners();
+                updateConnectionStatus();
+                showPage('home');
+
+                setTimeout(() => {
+                    if (loadingScreen) loadingScreen.style.display = 'none';
+                    if (app) app.style.display = 'block';
+                }, 500);
+
+                console.log('App initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                showToast('error', 'Failed to initialize app. Please refresh page.');
+
+                setTimeout(() => {
+                    if (loadingScreen) loadingScreen.style.display = 'none';
+                    if (app) app.style.display = 'block';
+                }, 500);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+
+        window.showPage = showPage;
+        window.submitRecord = submitRecord;
+        window.resetForm = resetForm;
+        window.deleteRecordHandler = deleteRecordHandler;
+        window.syncAllRecords = syncAllRecords;
+        window.exportToCSV = exportToCSV;
+        window.updateTotalAmount = updateTotalAmount;
+    </script>
 </body>
 </html>
