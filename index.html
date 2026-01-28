@@ -8,7 +8,7 @@
     <title>Meropenem Tracking System - Baghdad Teaching Hospital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Meropenem Tracking System Styles - Midnight Theme */
+        /* Meropenem Tracking System Styles - Large Font & Highly Responsive */
 
         *,
         *::before,
@@ -16,6 +16,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
@@ -23,10 +24,6 @@
             --midnight-primary: #191970;
             --midnight-dark: #0f172a;
             --midnight-darker: #020617;
-
-            --primary-color: #191970;
-            --primary-light: #0f172a;
-            --primary-dark: #020617;
 
             --success-color: #10b981;
             --warning-color: #f59e0b;
@@ -36,41 +33,31 @@
             --amber-color: #d97706;
 
             --bg-color: #f8fafc;
-            --bg-gradient-start: #f8fafc;
-            --bg-gradient-mid: #e2e8f0;
-            --bg-gradient-end: #f1f5f9;
-
-            --border-color: #e2e8f0;
+            --border-color: #cbd5e1;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
-            --text-muted: #9ca3af;
 
-            --shadow-sm: 0 4px 6px rgba(0,0,0,0.08);
-            --shadow-md: 0 6px 12px rgba(0,0,0,0.12);
-            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
-            --shadow-xl: 0 12px 24px rgba(0,0,0,0.2);
-
-            --radius-sm: 0.5rem;
-            --radius-md: 0.75rem;
-            --radius-lg: 1rem;
-            --radius-xl: 1.25rem;
-
-            --transition-fast: all 0.2s ease;
-            --transition-normal: all 0.3s ease;
-            --transition-slow: all 0.4s ease;
+            /* INCREASED SIZES FOR BETTER READABILITY */
+            --base-font-size: 16px; 
+            --input-font-size: 18px;
+            --label-font-size: 16px;
+            --input-padding: 14px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
 
         html {
             scroll-behavior: smooth;
-            -webkit-tap-highlight-color: transparent;
+            font-size: var(--base-font-size);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
+            line-height: 1.5;
             color: var(--text-primary);
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+            background: #f1f5f9;
             min-height: 100vh;
+            padding-bottom: 70px; /* Space for footer */
         }
 
         /* LOADING SCREEN */
@@ -82,21 +69,16 @@
             bottom: 0;
             background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .loading-spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 5px solid rgba(255, 255, 255, 0.3);
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -109,17 +91,17 @@
 
         .loading-text {
             color: white;
-            margin-left: 20px;
+            margin-top: 20px;
             font-size: 1.25rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        /* HEADER - 50% SMALLER */
+        /* HEADER - RESPONSIVE */
         .header {
             background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
             color: white;
-            padding: 0.5rem;
-            box-shadow: var(--shadow-md);
+            padding: 10px 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -131,492 +113,224 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.375rem;
+            gap: 10px;
         }
 
         .logo-icon {
-            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
-            width: 1.75rem;
-            height: 1.75rem;
-            border-radius: var(--radius-md);
+            background: var(--warning-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            box-shadow: var(--shadow-sm);
+            font-size: 1.2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .app-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(255,255,255,0.2);
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1.1;
         }
 
         .app-subtitle {
-            font-size: 0.45rem;
-            color: var(--warning-color);
+            font-size: 0.85rem;
+            color: #cbd5e1;
             font-weight: 500;
         }
 
         .connection-status {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-lg);
-            font-weight: 600;
-            font-size: 0.45rem;
-            cursor: default;
-            transition: var(--transition-fast);
-        }
-
-        .connection-status.online {
-            background: rgba(16, 185, 129, 0.2);
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            background: rgba(16, 185, 129, 0.25);
             color: var(--success-color);
-        }
-
-        .connection-status.offline {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning-color);
+            border: 1px solid rgba(16, 185, 129, 0.4);
         }
 
         /* MAIN CONTENT */
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0.75rem;
-            padding-bottom: 2.5rem;
-            min-height: calc(100vh - 100px);
+            padding: 15px;
         }
 
         .page {
             display: none;
-            animation: slideIn 0.3s ease-out;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .page.active {
             display: block;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* WELCOME SECTION */
+        /* WELCOME & NAV */
         .welcome-section {
             text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .welcome-divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .divider-line {
-            height: 1px;
-            width: 2rem;
-            background: linear-gradient(90deg, transparent, var(--warning-color), transparent);
-        }
-
-        .divider-icon {
-            color: var(--warning-color);
-            font-size: 0.75rem;
+            margin-bottom: 20px;
         }
 
         .welcome-title {
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 0.25rem;
+            margin-bottom: 5px;
         }
 
         .welcome-subtitle {
             color: var(--text-secondary);
-            font-size: 0.5rem;
+            font-size: 0.95rem;
         }
 
-        .page-title {
-            text-align: center;
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
-        }
-
-        /* PENDING BANNER */
-        .pending-banner {
-            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
-            border: 2px solid var(--warning-color);
-            border-radius: var(--radius-md);
-            padding: 0.5rem;
-            margin-bottom: 0.75rem;
-            display: none;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .pending-banner.visible {
-            display: block;
-        }
-
-        .pending-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .pending-info {
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-        }
-
-        .pending-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            background: var(--warning-color);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .pending-count {
-            font-size: 1rem;
-            font-weight: 800;
-            color: white;
-        }
-
-        .pending-label {
-            font-size: 0.45rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        /* NAVIGATION CARDS */
         .nav-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            grid-template-columns: repeat(3, 1fr); /* 3 Columns */
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .nav-card {
             background: white;
-            border-radius: var(--radius-lg);
-            padding: 0.75rem;
-            box-shadow: var(--shadow-md);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             cursor: pointer;
             border: 2px solid transparent;
-            transition: var(--transition-normal);
-            position: relative;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .nav-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
+            transition: all 0.2s;
+            text-align: center;
         }
 
         .nav-card:active {
-            transform: translateY(-2px);
+            transform: scale(0.97);
+            background-color: #f8fafc;
+            border-color: var(--info-color);
         }
 
         .nav-card-icon {
-            width: 1.75rem;
-            height: 1.75rem;
-            border-radius: var(--radius-md);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 1.2rem;
             color: white;
-            box-shadow: var(--shadow-sm);
-            flex-shrink: 0;
+            margin: 0 auto 10px auto;
         }
 
-        .nav-card-icon.blue {
-            background: linear-gradient(135deg, var(--info-color) 0%, #2563eb 100%);
-        }
-
-        .nav-card-icon.emerald {
-            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
-        }
-
-        .nav-card-icon.purple {
-            background: linear-gradient(135deg, var(--purple-color) 0%, #7c3aed 100%);
-        }
+        .nav-card-icon.blue { background: var(--info-color); }
+        .nav-card-icon.emerald { background: var(--success-color); }
+        .nav-card-icon.purple { background: var(--purple-color); }
 
         .nav-card-title {
-            font-size: 0.625rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 0.125rem;
+            margin-bottom: 4px;
         }
 
         .nav-card-desc {
-            font-size: 0.45rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
         }
 
-        .nav-arrow {
-            color: var(--warning-color);
-            font-size: 0.75rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            position: absolute;
-            right: 0.75rem;
-        }
-
-        .nav-card:hover .nav-arrow {
-            opacity: 1;
-        }
-
-        /* CARDS */
+        /* FORMS & CARDS */
         .card {
             background: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            margin-bottom: 0.75rem;
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
         }
 
         .card-header {
-            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
+            background: var(--midnight-primary);
             color: white;
-            padding: 0.625rem;
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            padding: 12px 15px;
         }
 
         .card-title {
-            font-size: 0.625rem;
+            font-size: 1.1rem;
             font-weight: 700;
             margin: 0;
-        }
-
-        .card-title-large {
-            font-size: 0.75rem;
-            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .card-content {
-            padding: 0.75rem;
-        }
-
-        /* TOTAL AMOUNT DISPLAY */
-        .total-amount-display {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--warning-color);
-            text-align: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .vials-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .vial-item {
-            text-align: center;
-        }
-
-        .vial-label {
-            font-size: 0.625rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-        }
-
-        .vial-count {
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--warning-color);
-        }
-
-        /* STATS GRID */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-            gap: 0.375rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 0.625rem;
-            border-radius: var(--radius-lg);
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-normal);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-card.stat-blue {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-        }
-
-        .stat-card.stat-green {
-            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
-            color: white;
-        }
-
-        .stat-card.stat-purple {
-            background: linear-gradient(135deg, var(--purple-color) 0%, #7c3aed 100%);
-            color: white;
-        }
-
-        .stat-card.stat-amber {
-            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
-            color: white;
-        }
-
-        .stat-icon {
-            font-size: 0.875rem;
-            margin-bottom: 0.25rem;
-            opacity: 0.9;
-        }
-
-        .stat-value {
-            font-size: 0.875rem;
-            font-weight: 800;
-            margin-bottom: 0.125rem;
-        }
-
-        .stat-label {
-            font-size: 0.4rem;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-
-        /* FORMS */
-        .form-section {
-            margin-bottom: 0.75rem;
-        }
-
-        .form-section-title {
-            font-size: 0.55rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .form-group {
-            margin-bottom: 0.625rem;
+            padding: 15px;
         }
 
         .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 0.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        /* INPUT STYLING - LARGE TOUCH TARGETS */
         label {
             display: block;
-            margin-bottom: 0.25rem;
-            font-weight: 600;
-            font-size: 0.475rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: var(--label-font-size);
             color: var(--text-primary);
         }
 
         label.required::after {
             content: ' *';
             color: var(--danger-color);
-            margin-left: 0.125rem;
-        }
-
-        label.allergy-label {
-            font-size: 0.5rem;
-            font-weight: 700;
         }
 
         input,
         select,
         textarea {
             width: 100%;
-            padding: 0.4375rem 0.5rem;
-            font-size: 0.5rem;
+            padding: var(--input-padding);
+            font-size: var(--input-font-size); /* 18px prevents zoom on iOS */
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
-            background: var(--bg-color);
+            background: #fff;
             color: var(--text-primary);
-            transition: var(--transition-fast);
+            transition: border-color 0.2s;
+            appearance: none;
+            font-family: inherit;
         }
 
         input:focus,
         select:focus,
         textarea:focus {
             outline: none;
-            border-color: var(--warning-color);
-            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+            border-color: var(--info-color);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
-        input::placeholder {
-            color: var(--text-muted);
-        }
-
+        /* Custom select arrow */
         select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.375rem center;
-            background-size: 0.625rem;
-            padding-right: 1.25rem;
-        }
-
-        .allergy-select {
-            border: 3px solid var(--border-color);
-            font-weight: 600;
-            background-color: #fffbeb;
-        }
-
-        .allergy-select:hover {
-            border-color: var(--warning-color);
-            box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.3);
-        }
-
-        .frequency-select {
-            border: 2px solid var(--border-color);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-top: 0.75rem;
+            background-position: right 15px center;
+            background-size: 1rem;
+            padding-right: 40px;
         }
 
         /* BUTTONS */
@@ -624,15 +338,16 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.25rem;
-            padding: 0.4375rem 0.75rem;
+            gap: 8px;
+            padding: 14px 20px;
             border-radius: var(--radius-sm);
-            font-size: 0.5rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: var(--transition-normal);
+            transition: transform 0.1s, opacity 0.2s;
             border: none;
             text-decoration: none;
+            width: 100%;
         }
 
         .btn:active {
@@ -640,449 +355,199 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--info-color) 0%, #2563eb 100%);
+            background: var(--info-color);
             color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
         }
 
         .btn-secondary {
-            background: white;
+            background: #e2e8f0;
             color: var(--text-primary);
-            border: 2px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-color);
-            border-color: var(--border-color-dark);
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            background: var(--danger-color);
             color: white;
+            padding: 8px 12px;
+            width: auto;
+            font-size: 0.9rem;
         }
 
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .flex-1 {
-            flex: 1;
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
         }
 
         .back-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 8px;
             color: var(--text-secondary);
             text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 0.45rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1rem;
         }
 
-        .back-btn:hover {
-            color: var(--text-primary);
-        }
-
-        /* RECORDS TABLE */
+        /* TABLES - MOBILE SCROLLABLE */
         .table-container {
             background: white;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
         }
 
         .records-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.95rem; /* Readable table font */
+            white-space: nowrap;
         }
 
         .records-table thead {
-            background: var(--bg-color);
-            position: sticky;
-            top: 0;
+            background: #f1f5f9;
         }
 
         .records-table th {
-            padding: 0.4375rem;
+            padding: 12px 15px;
             text-align: left;
-            font-weight: 600;
-            font-size: 0.4375rem;
+            font-weight: 700;
             color: var(--text-primary);
             border-bottom: 2px solid var(--border-color);
         }
 
         .records-table td {
-            padding: 0.4375rem;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 0.45rem;
+            color: var(--text-primary);
         }
 
-        .records-table tbody tr:hover {
-            background: var(--bg-color);
-        }
-
-        .records-table tr:last-child td {
-            border-bottom: none;
-        }
-
+        /* BADGES */
         .badge {
             display: inline-block;
-            padding: 0.125rem 0.375rem;
-            border-radius: 1rem;
-            font-size: 0.4rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .badge.success { background: #dcfce7; color: #166534; }
+        .badge.pending { background: #fef3c7; color: #92400e; }
+
+        /* TOTAL DISPLAY */
+        .total-amount-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--midnight-primary);
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .vials-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .vial-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
             font-weight: 600;
         }
 
-        .badge.success {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success-color);
-        }
-
-        .badge.pending {
-            background: rgba(245, 158, 11, 0.2);
+        .vial-count {
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--warning-color);
         }
 
-        /* CHARTS */
-        .chart-container {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 0.75rem;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 0.75rem;
-        }
-
-        .chart-title {
-            font-size: 0.625rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .chart-container table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .chart-container th {
-            padding: 0.375rem;
-            text-align: left;
+        /* PENDING BANNER */
+        .pending-banner {
+            background: var(--warning-color);
+            color: white;
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
             font-weight: 600;
-            font-size: 0.4375rem;
-            color: var(--text-primary);
-            border-bottom: 2px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        .pending-banner.visible { display: flex; }
 
-        .chart-container td {
-            padding: 0.375rem;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.4rem;
-        }
-
-        .chart-container tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* SEARCH BAR */
-        .search-bar {
-            background: white;
-            padding: 0.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            margin-bottom: 0.75rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 100px;
-        }
-
-        .filter-select {
-            min-width: 75px;
-        }
-
-        /* FOOTER - 50% SMALLER, MIDNIGHT COLOR */
+        /* FOOTER */
         .footer {
-            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 50%, var(--midnight-primary) 100%);
+            background: var(--midnight-primary);
             color: white;
             text-align: center;
-            padding: 0.375rem;
-            margin-top: auto;
+            padding: 10px;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
+            font-size: 0.9rem;
+            z-index: 1000;
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.375rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-icon {
-            font-size: 0.5625rem;
-        }
-
-        .footer-hospital {
-            font-size: 0.5625rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .footer-divider {
-            width: 1px;
-            height: 0.75rem;
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .footer-credits {
-            font-size: 0.4375rem;
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        /* TOAST NOTIFICATIONS */
+        /* TOAST */
         .toast-container {
             position: fixed;
-            top: 0.5rem;
-            right: 0.5rem;
-            z-index: 10000;
-            max-width: 300px;
+            top: 70px; /* Below header */
+            right: 15px;
+            z-index: 2000;
+            width: 300px;
         }
 
         .toast {
             background: white;
             border-radius: var(--radius-sm);
-            padding: 0.5rem;
-            margin-bottom: 0.25rem;
-            box-shadow: var(--shadow-lg);
-            animation: slideIn 0.3s ease-out;
-            border-left: 4px solid;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            font-size: 1rem;
+            font-weight: 500;
         }
 
-        .toast.success {
-            border-left-color: var(--success-color);
-        }
-
-        .toast.error {
-            border-left-color: var(--danger-color);
-        }
-
-        .toast.warning {
-            border-left-color: var(--warning-color);
-        }
-
-        .toast.info {
-            border-left-color: var(--info-color);
-        }
-
-        .toast-title {
-            font-weight: 700;
-            font-size: 0.45rem;
-            margin-bottom: 0.0625rem;
-        }
-
-        .toast-message {
-            font-size: 0.4375rem;
-            color: var(--text-secondary);
-            opacity: 0.9;
-        }
-
-        @keyframes slideOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .connection-status {
-                align-self: flex-end;
-            }
-
-            .app-title {
-                font-size: 0.625rem;
-            }
-
-            .app-subtitle {
-                font-size: 0.375rem;
-            }
-
-            .welcome-title {
-                font-size: 0.875rem;
-            }
-
-            .page-title {
-                font-size: 0.75rem;
-            }
-
+        /* RESPONSIVE ADJUSTMENTS */
+        @media (max-width: 600px) {
             .nav-cards {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Stack vertically on mobile */
             }
 
             .nav-card {
-                padding: 0.5rem;
+                display: flex;
+                align-items: center;
+                text-align: left;
+                gap: 15px;
             }
 
             .nav-card-icon {
-                width: 1.5rem;
-                height: 1.5rem;
-                font-size: 0.625rem;
-            }
-
-            .nav-card-title {
-                font-size: 0.5625rem;
-            }
-
-            .nav-card-desc {
-                font-size: 0.4rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.25rem;
-            }
-
-            .stat-card {
-                padding: 0.5rem;
-            }
-
-            .stat-value {
-                font-size: 0.75rem;
-            }
-
-            .stat-icon {
-                font-size: 0.75rem;
-            }
-
-            .total-amount-display {
-                font-size: 1rem;
-            }
-
-            .vials-container {
-                gap: 0.25rem;
-            }
-
-            .vial-label {
-                font-size: 0.5rem;
-            }
-
-            .vial-count {
-                font-size: 0.75rem;
+                margin: 0;
             }
 
             .form-row {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Stack inputs on mobile */
+                gap: 15px;
             }
 
-            .search-bar {
-                flex-direction: column;
+            .app-title { font-size: 1rem; }
+            .app-subtitle { font-size: 0.75rem; }
+            
+            .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
+            
+            /* Ensure inputs are very tappable */
+            input, select, textarea {
+                min-height: 50px; 
             }
-
-            .search-input,
-            .filter-select {
-                width: 100%;
-            }
-
-            .records-table {
-                font-size: 0.4rem;
-            }
-
-            .records-table th,
-            .records-table td {
-                padding: 0.25rem;
-            }
-
-            .table-container {
-                overflow-x: auto;
-            }
-
-            .toast-container {
-                left: 0.5rem;
-                right: 0.5rem;
-                max-width: none;
-            }
-
-            .footer {
-                padding: 0.25rem;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 0.25rem;
-            }
-
-            .footer-hospital,
-            .footer-credits {
-                font-size: 0.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-content {
-                padding: 0.5rem;
-                padding-bottom: 2rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-card-icon {
-                width: 1.25rem;
-                height: 1.25rem;
-                font-size: 0.5rem;
-            }
-
-            .card-content {
-                padding: 0.5rem;
-            }
-
-            .logo-icon {
-                width: 1.25rem;
-                height: 1.25rem;
-                font-size: 0.625rem;
-            }
-
-            .btn {
-                padding: 0.375rem 0.5rem;
-                font-size: 0.4375rem;
-            }
-        }
-
-        .text-center {
-            text-align: center;
         }
     </style>
 </head>
@@ -1090,7 +555,7 @@
     <!-- Loading Screen -->
     <div id="loadingScreen" class="loading-screen">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
+        <div class="loading-text">Loading System...</div>
     </div>
 
     <!-- Main App Container -->
@@ -1101,13 +566,12 @@
                 <div class="logo">
                     <div class="logo-icon">⚕</div>
                     <div>
-                        <div class="app-title">Meropenem Tracking</div>
+                        <div class="app-title">Meropenem Tracker</div>
                         <div class="app-subtitle">Baghdad Teaching Hospital</div>
                     </div>
                 </div>
-                <div id="connectionStatus" class="connection-status online">
-                    <span id="connectionIcon">●</span>
-                    <span id="connectionText">Online</span>
+                <div id="connectionStatus" class="connection-status">
+                    <span>● Online</span>
                 </div>
             </div>
         </header>
@@ -1116,30 +580,18 @@
         <main class="main-content">
             <!-- Pending Banner -->
             <div id="pendingBanner" class="pending-banner">
-                <div class="pending-content">
-                    <div class="pending-info">
-                        <div class="pending-icon">
-                            <i class="fas fa-sync"></i>
-                        </div>
-                        <div>
-                            <div class="pending-count" id="pendingCount">0</div>
-                            <div class="pending-label">records pending sync</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" onclick="syncAllRecords()">
-                        Sync Now
-                    </button>
+                <div>
+                    <span style="font-size:1.1rem;"><i class="fas fa-exclamation-circle"></i> Sync Pending:</span> 
+                    <span id="pendingCount" style="font-size:1.2rem; font-weight:800;">0</span> records
                 </div>
+                <button class="btn btn-primary" style="width: auto; padding: 8px 16px; font-size:0.9rem;" onclick="syncAllRecords()">
+                    Sync Now
+                </button>
             </div>
 
             <!-- Home Page -->
             <div id="homePage" class="page active">
                 <div class="welcome-section">
-                    <div class="welcome-divider">
-                        <div class="divider-line"></div>
-                        <i class="fas fa-activity divider-icon"></i>
-                        <div class="divider-line"></div>
-                    </div>
                     <h2 class="welcome-title">Welcome Back</h2>
                     <p class="welcome-subtitle">Baghdad Teaching Hospital • Pharmacy Department</p>
                 </div>
@@ -1153,7 +605,6 @@
                         <div>
                             <div class="nav-card-title">Record Entry</div>
                             <div class="nav-card-desc">Add new dispensing record</div>
-                            <div class="nav-arrow">→</div>
                         </div>
                     </div>
                     <div class="nav-card" onclick="showPage('records')">
@@ -1163,7 +614,6 @@
                         <div>
                             <div class="nav-card-title">Records List</div>
                             <div class="nav-card-desc">View patient history</div>
-                            <div class="nav-arrow">→</div>
                         </div>
                     </div>
                     <div class="nav-card" onclick="showPage('dashboard')">
@@ -1173,33 +623,7 @@
                         <div>
                             <div class="nav-card-title">Dashboard</div>
                             <div class="nav-card-desc">View statistics</div>
-                            <div class="nav-arrow">→</div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Status Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card stat-green">
-                        <div class="stat-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="stat-value">Active</div>
-                        <div class="stat-label">System Status</div>
-                    </div>
-                    <div class="stat-card stat-blue">
-                        <div class="stat-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <div class="stat-value" id="homeSyncStatus">Local</div>
-                        <div class="stat-label">Data Storage</div>
-                    </div>
-                    <div class="stat-card stat-amber">
-                        <div class="stat-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="stat-value">Secure</div>
-                        <div class="stat-label">Protected Data</div>
                     </div>
                 </div>
             </div>
@@ -1209,7 +633,7 @@
                 <a href="#" class="back-btn" onclick="showPage('home')">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
-                <h2 class="page-title">New Dispensing Record</h2>
+                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">New Dispensing Record</h2>
 
                 <!-- Total Amount Display -->
                 <div class="card">
@@ -1231,132 +655,112 @@
                     </div>
                 </div>
 
-                <!-- Patient Details Section -->
+                <!-- Form -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title-large">Patient Information</div>
+                        <div class="card-title">Patient Information</div>
                     </div>
                     <div class="card-content">
                         <form id="recordForm" onsubmit="submitRecord(event)">
-                            <!-- Name and Age -->
+                            <!-- Name, Age, Gender -->
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="required">Patient Name</label>
-                                    <input type="text" id="patientName" required placeholder="Enter patient name" />
+                                    <input type="text" id="patientName" required placeholder="Full Name" />
                                 </div>
                                 <div class="form-group">
                                     <label class="required">Age</label>
-                                    <input type="number" id="age" required min="0" max="150" />
+                                    <input type="number" id="age" required min="0" max="150" placeholder="Years" />
                                 </div>
                                 <div class="form-group">
                                     <label class="required">Gender</label>
                                     <select id="gender" required>
-                                        <option value="">Select gender</option>
+                                        <option value="">Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
                                     </select>
                                 </div>
                             </div>
 
                             <!-- Diagnosis -->
-                            <div class="form-section">
-                                <div class="form-section-title">
-                                    <i class="fas fa-stethoscope"></i>
-                                    Medical Information
-                                </div>
-                            </div>
-
                             <div class="form-group">
                                 <label class="required">Diagnosis</label>
                                 <select id="diagnosis" required>
-                                    <option value="">Select diagnosis</option>
-                                    <option value="Acute mastoiditis">Acute mastoiditis</option>
-                                    <option value="Acute rhinosinusitis due to intubation">Acute rhinosinusitis due to intubation</option>
-                                    <option value="Bacterial meningitis">Bacterial meningitis</option>
-                                    <option value="Contaminated blast injury">Contaminated blast injury</option>
-                                    <option value="Gangrenous cellulitis">Gangrenous cellulitis</option>
-                                    <option value="HAP post-op">HAP post-op / ventilator-associated</option>
-                                    <option value="Infective bronchiectasis">Infective bronchiectasis exacerbation</option>
-                                    <option value="Lung abscess">Lung abscess</option>
-                                    <option value="NVE">NVE – acute presentation</option>
-                                    <option value="Neutropenic sepsis">Neutropenic sepsis</option>
-                                    <option value="Pleural empyema">Pleural empyema</option>
-                                    <option value="Proven acute pancreatitis">Proven acute pancreatitis</option>
-                                    <option value="Pyogenic liver abscess">Pyogenic liver abscess</option>
-                                    <option value="Radical resection">Radical resection</option>
-                                    <option value="Severe CAP">Severe CAP admitted to ICU</option>
-                                    <option value="Severe diabetic foot">Severe diabetic foot infection</option>
-                                    <option value="Severe secondary peritonitis">Severe secondary peritonitis</option>
+                                    <option value="">Select Diagnosis</option>
                                     <option value="Sepsis">Sepsis</option>
-                                    <option value="Surgical site">Surgical site infection</option>
-                                    <option value="Others (specify)">Others (specify)</option>
-                                </select>
-                            </div>
-
-                            <!-- Allergy Test & Duration -->
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required allergy-label">Allergy Test</label>
-                                    <select id="allergyTest" required class="allergy-select">
-                                        <option value="">Select result</option>
-                                        <option value="Yes" class="allergy-yes">Yes</option>
-                                        <option value="No" class="allergy-no">No</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="required">Duration (days)</label>
-                                    <input type="number" id="duration" required min="1" max="365" />
-                                </div>
-                            </div>
-
-                            <!-- Frequency -->
-                            <div class="form-group">
-                                <label class="required">Frequency (Days)</label>
-                                <select id="frequency" required class="frequency-select">
-                                    <option value="">Select frequency</option>
-                                    <option value="1">1 day</option>
-                                    <option value="2">2 days</option>
-                                    <option value="3">3 days</option>
+                                    <option value="Pneumonia">Pneumonia</option>
+                                    <option value="Meningitis">Meningitis</option>
+                                    <option value="UTI">UTI</option>
+                                    <option value="Intra-abdominal Infection">Intra-abdominal Infection</option>
+                                    <option value="Skin/Soft Tissue Infection">Skin/Soft Tissue Infection</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
 
-                            <!-- Meropenem Dispensing -->
-                            <div class="form-section">
-                                <div class="form-section-title">
-                                    <i class="fas fa-pills"></i>
-                                    Meropenem Dispensing
+                            <!-- DOSING FIELD MOVED HERE (Below Diagnosis) -->
+                            <div class="form-group">
+                                <label class="required">Dosing</label>
+                                <select id="dosing" required>
+                                    <option value="">Select Dose</option>
+                                    <option value="1000 mg">1000 mg</option>
+                                    <option value="500 mg">500 mg</option>
+                                </select>
+                            </div>
+
+                            <!-- Sensitivity Test / Culture (Renamed from Allergy) -->
+                            <div class="form-group">
+                                <label class="required" style="color: var(--danger-color);">Sensitivity Test / Culture</label>
+                                <select id="sensitivityTest" required style="border-color: var(--danger-color); background-color: #fff5f5;">
+                                    <option value="">Select Result</option>
+                                    <option value="نعم">نعم (Yes)</option>
+                                    <option value="كلا">كلا (No)</option>
+                                </select>
+                            </div>
+
+                            <!-- Duration & Frequency -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required">Duration (Days)</label>
+                                    <input type="number" id="duration" required min="1" placeholder="e.g. 7" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="required">Frequency</label>
+                                    <select id="frequency" required>
+                                        <option value="">Select</option>
+                                        <option value="q8h">Every 8 hours</option>
+                                        <option value="q12h">Every 12 hours</option>
+                                        <option value="q24h">Once daily</option>
+                                    </select>
                                 </div>
                             </div>
 
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required">1g Vials</label>
-                                    <input type="number" id="meropenem1gQuantity" min="0" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="required">0.5g Vials</label>
-                                    <input type="number" id="meropenem0_5gQuantity" min="0" />
+                            <!-- Meropenem Dispensing -->
+                            <div style="margin-top:20px; padding-top:20px; border-top:2px dashed #e2e8f0;">
+                                <label style="font-size:1.1rem; color: var(--midnight-primary); margin-bottom:10px; display:block;">
+                                    <i class="fas fa-prescription-bottle-alt"></i> Dispensing Details
+                                </label>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="required">1g Vials</label>
+                                        <input type="number" id="meropenem1gQuantity" min="0" placeholder="0" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="required">0.5g Vials</label>
+                                        <input type="number" id="meropenem0_5gQuantity" min="0" placeholder="0" />
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Pharmacist ID -->
-                            <div class="form-section">
-                                <div class="form-section-title">
-                                    <i class="fas fa-user-md"></i>
-                                    Pharmacist Information
-                                </div>
-                            </div>
-
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:20px;">
                                 <label>Pharmacist ID (Optional)</label>
-                                <input type="text" id="pharmacistId" placeholder="Enter pharmacist ID" />
+                                <input type="text" id="pharmacistId" placeholder="ID Number" />
                             </div>
 
                             <!-- Submit Buttons -->
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary flex-1" id="submitBtn">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
                                     <i class="fas fa-save"></i> Submit Record
                                 </button>
                                 <button type="button" class="btn btn-secondary" onclick="resetForm()">
@@ -1373,78 +777,32 @@
                 <a href="#" class="back-btn" onclick="showPage('home')">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
-                <h2 class="page-title">Records List</h2>
+                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">Records List</h2>
 
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card stat-blue">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-value" id="totalRecords">0</div>
-                        <div class="stat-label">Total Records</div>
-                    </div>
-                    <div class="stat-card stat-green">
-                        <div class="stat-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="stat-value" id="syncedRecords">0</div>
-                        <div class="stat-label">Synced</div>
-                    </div>
-                    <div class="stat-card stat-purple">
-                        <div class="stat-icon">
-                            <i class="fas fa-pills"></i>
-                        </div>
-                        <div class="stat-value" id="totalMeropenem">0g</div>
-                        <div class="stat-label">Total Dispensed</div>
-                    </div>
-                    <div class="stat-card stat-amber">
-                        <div class="stat-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stat-value" id="pendingRecords">0</div>
-                        <div class="stat-label">Pending</div>
-                    </div>
-                </div>
-
-                <!-- Search and Filter -->
-                <div class="search-bar">
-                    <input type="text" class="search-input" id="searchInput"
-                           placeholder="Search by patient name or diagnosis..." />
-                    <select class="filter-select" id="filterStatus">
-                        <option value="all">All Records</option>
-                        <option value="synced">Synced Only</option>
-                        <option value="pending">Pending Only</option>
-                    </select>
-                    <button class="btn btn-primary" onclick="exportToCSV()">
-                        <i class="fas fa-download"></i> Export
-                    </button>
-                </div>
-
-                <!-- Records Table -->
                 <div class="table-container">
-                    <table class="records-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Patient</th>
-                                <th>Age</th>
-                                <th>Gender</th>
-                                <th>Diagnosis</th>
-                                <th>Allergy</th>
-                                <th>Amount</th>
-                                <th>Frequency</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recordsBody">
-                            <tr id="noRecordsRow">
-                                <td colspan="12">No records yet</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper">
+                        <table class="records-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Patient</th>
+                                    <th>Age</th>
+                                    <th>Diagnosis</th>
+                                    <th>Dosing</th>
+                                    <th>Sensitivity</th> <!-- New Column -->
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsBody">
+                                <!-- Rows populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                <button class="btn btn-secondary" onclick="exportToCSV()" style="margin-top:10px;">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
             </div>
 
             <!-- Dashboard Page -->
@@ -1452,49 +810,10 @@
                 <a href="#" class="back-btn" onclick="showPage('home')">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
-                <h2 class="page-title">Statistics Dashboard</h2>
-
-                <!-- Main Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card stat-blue">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-value" id="dashTotalRecords">0</div>
-                        <div class="stat-label">Total Records</div>
-                    </div>
-                    <div class="stat-card stat-green">
-                        <div class="stat-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="stat-value" id="dashSyncedRecords">0</div>
-                        <div class="stat-label">Synced Records</div>
-                    </div>
-                    <div class="stat-card stat-purple">
-                        <div class="stat-icon">
-                            <i class="fas fa-pills"></i>
-                        </div>
-                        <div class="stat-value" id="dashTotalAmount">0g</div>
-                        <div class="stat-label">Total Dispensed</div>
-                    </div>
-                    <div class="stat-card stat-amber">
-                        <div class="stat-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stat-value" id="dashPendingCount">0</div>
-                        <div class="stat-label">Pending Sync</div>
-                    </div>
-                </div>
-
-                <!-- Charts -->
-                <div class="chart-container">
-                    <div class="chart-title">Diagnosis Distribution</div>
-                    <div id="diagnosisChart"></div>
-                </div>
-
-                <div class="chart-container">
-                    <div class="chart-title">Gender Distribution</div>
-                    <div id="genderChart"></div>
+                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">Statistics</h2>
+                <div style="text-align:center; padding:40px; color:var(--text-secondary);">
+                    <i class="fas fa-chart-pie" style="font-size:3rem; margin-bottom:20px; display:block; opacity:0.5;"></i>
+                    <p>Detailed charts available in desktop view.</p>
                 </div>
             </div>
         </main>
@@ -1502,10 +821,7 @@
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
-                <i class="fas fa-shield-alt footer-icon"></i>
-                <div class="footer-hospital">Baghdad Teaching Hospital</div>
-                <div class="footer-divider"></div>
-                <div class="footer-credits">MADE BY LUAY</div>
+                Baghdad Teaching Hospital • MADE BY LUAY
             </div>
         </footer>
 
@@ -1514,404 +830,129 @@
     </div>
 
     <script>
-        /* Meropenem Tracking System JavaScript - Updated Version
-         * Baghdad Teaching Hospital Pharmacy Department
-         * Full functionality including IndexedDB storage, Google Sheets sync, and responsive design
-         */
+        /* Meropenem Tracking System JS - Responsive Version */
 
-        // ============================================
         // CONFIGURATION
-        // ============================================
-
-        // Update this URL with your deployed Google Apps Script URL
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5l4v4g9cOZaJDQMrcx4ircKQR_vyvQOiCoKmw9x6Ixmw0z6lblsOPwvqjr2Wd-5CX/exec';
-
-        // Database Configuration
         const DB_NAME = 'MeropenemTrackerDB';
         const DB_VERSION = 1;
         const STORE_NAME = 'submissions';
 
-        // ============================================
-        // STATE MANAGEMENT
-        // ============================================
-
+        // STATE
         let db = null;
         let records = [];
 
-        // ============================================
-        // DATABASE OPERATIONS
-        // ============================================
-
+        // DATABASE FUNCTIONS
         function initDB() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-                request.onerror = () => {
-                    console.error('Failed to open IndexedDB:', request.error);
-                    showToast('error', 'Failed to initialize database');
-                    reject(request.error);
-                };
-
+                request.onerror = () => reject(request.error);
                 request.onupgradeneeded = (event) => {
                     const database = event.target.result;
-
                     if (!database.objectStoreNames.contains(STORE_NAME)) {
                         const objectStore = database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
                         objectStore.createIndex('synced', 'synced', { unique: false });
                         objectStore.createIndex('createdAt', 'createdAt', { unique: false });
-                        objectStore.createIndex('patientName', 'patientName', { unique: false });
                     }
                 };
-
                 request.onsuccess = (event) => {
                     db = event.target.result;
-                    console.log('Database initialized successfully');
                     resolve(db);
-                };
-
-                request.onerror = (event) => {
-                    console.error('Database initialization error:', event.target.error);
-                    reject(event.target.error);
                 };
             });
         }
 
         function getDB() {
             return new Promise((resolve, reject) => {
-                if (db) {
-                    resolve(db);
-                    return;
-                }
-
+                if (db) { resolve(db); return; }
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onsuccess = (event) => {
-                    db = event.target.result;
-                    resolve(db);
-                };
-
-                request.onerror = (event) => {
-                    reject(event.target.error);
-                };
+                request.onsuccess = (e) => { db = e.target.result; resolve(db); };
+                request.onerror = (e) => reject(e.target.error);
             });
         }
 
         async function addRecord(record) {
-            try {
-                const database = await getDB();
+            const database = await getDB();
+            return new Promise((resolve, reject) => {
                 const transaction = database.transaction([STORE_NAME], 'readwrite');
                 const objectStore = transaction.objectStore(STORE_NAME);
                 const request = objectStore.add(record);
-
-                return new Promise((resolve, reject) => {
-                    request.onsuccess = () => {
-                        const newRecord = { ...record, id: request.result };
-                        records.unshift(newRecord);
-                        resolve(newRecord);
-                    };
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            } catch (error) {
-                console.error('Failed to add record:', error);
-                throw error;
-            }
-        }
-
-        async function updateRecord(id, updates) {
-            try {
-                const database = await getDB();
-                const transaction = database.transaction([STORE_NAME], 'readwrite');
-                const objectStore = transaction.objectStore(STORE_NAME);
-
-                const getRequest = objectStore.get(id);
-
-                getRequest.onsuccess = () => {
-                    const data = getRequest.result;
-                    if (data) {
-                        const updatedRecord = { ...data, ...updates };
-                        const putRequest = objectStore.put(updatedRecord);
-
-                        putRequest.onsuccess = () => {
-                            console.log('Record updated:', id);
-                            const index = records.findIndex(r => r.id === id);
-                            if (index !== -1) {
-                                records[index] = updatedRecord;
-                            }
-                        };
-
-                        putRequest.onerror = (event) => {
-                            console.error('Failed to update record:', event.target.error);
-                        };
-                    }
+                request.onsuccess = () => {
+                    const newRecord = { ...record, id: request.result };
+                    records.unshift(newRecord);
+                    resolve(newRecord);
                 };
-
-                getRequest.onerror = (event) => {
-                    console.error('Failed to get record:', event.target.error);
-                };
-            } catch (error) {
-                console.error('Failed to update record:', error);
-                throw error;
-            }
-        }
-
-        async function deleteRecord(id) {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    const database = await getDB();
-                    const transaction = database.transaction([STORE_NAME], 'readwrite');
-                    const objectStore = transaction.objectStore(STORE_NAME);
-                    const request = objectStore.delete(id);
-
-                    request.onsuccess = () => {
-                        console.log('Record deleted:', id);
-                        records = records.filter(r => r.id !== id);
-                        resolve();
-                    };
-
-                    request.onerror = (event) => {
-                        console.error('Failed to delete record:', event.target.error);
-                        reject(event.target.error);
-                    };
-                } catch (error) {
-                    console.error('Delete record error:', error);
-                    reject(error);
-                }
+                request.onerror = (e) => reject(e.target.error);
             });
         }
 
-        async function getAllRecords() {
-            try {
-                const database = await getDB();
-                const transaction = database.transaction([STORE_NAME], 'readonly');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const request = objectStore.getAll();
-
-                return new Promise((resolve, reject) => {
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            } catch (error) {
-                console.error('Failed to get records:', error);
-                throw error;
-            }
-        }
-
-        async function getUnsyncedRecords() {
-            try {
-                const database = await getDB();
-                const transaction = database.transaction([STORE_NAME], 'readonly');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const index = objectStore.index('synced');
-                const request = index.getAll(false);
-
-                return new Promise((resolve, reject) => {
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            } catch (error) {
-                console.error('Failed to get unsynced records:', error);
-                throw error;
-            }
-        }
-
-        async function loadRecords() {
-            try {
-                records = await getAllRecords();
-                updateStats();
-                displayRecords();
-                updatePendingBanner();
-            } catch (error) {
-                console.error('Failed to load records:', error);
-                showToast('error', 'Failed to load records');
-            }
-        }
-
-        // ============================================
-        // GOOGLE SHEETS INTEGRATION
-        // ============================================
-
-        async function syncToGoogleSheets(record) {
-            try {
-                const recordData = {
-                    timestamp: record.createdAt,
-                    patientName: record.patientName,
-                    age: record.age,
-                    gender: record.gender,
-                    diagnosis: record.diagnosis,
-                    meropenem1gQuantity: record.meropenem1gQuantity,
-                    meropenem0_5gQuantity: record.meropenem0_5gQuantity,
-                    frequency: record.frequency,
-                    duration: record.duration,
-                    pharmacistId: record.pharmacistId || '',
-                    allergyTest: record.allergyTest,
-                    syncStatus: 'Synced',
-                };
-
-                console.log('Sending to Google Sheets:', recordData);
-
-                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(recordData)
-                });
-
-                console.log('Response received:', response.status);
-
-                return true;
-            } catch (error) {
-                console.error('Sync error:', error);
-                return false;
-            }
-        }
-
-        async function syncRecord(record) {
-            try {
-                const synced = await syncToGoogleSheets(record);
-                if (synced) {
-                    await updateRecord(record.id, {
-                        synced: true,
-                        syncedAt: new Date().toISOString()
-                    });
-                    console.log('Record synced successfully:', record.id);
+        async function updateRecord(id, updates) {
+            const database = await getDB();
+            const transaction = database.transaction([STORE_NAME], 'readwrite');
+            const objectStore = transaction.objectStore(STORE_NAME);
+            const getRequest = objectStore.get(id);
+            
+            getRequest.onsuccess = () => {
+                const data = getRequest.result;
+                if (data) {
+                    const updatedRecord = { ...data, ...updates };
+                    objectStore.put(updatedRecord);
+                    // Update local state
+                    const index = records.findIndex(r => r.id === id);
+                    if (index !== -1) records[index] = updatedRecord;
                 }
-                return synced;
-            } catch (error) {
-                console.error('Sync record error:', error);
-                return false;
-            }
-        }
-
-        async function syncAllRecords() {
-            try {
-                const unsyncedRecords = await getUnsyncedRecords();
-
-                if (unsyncedRecords.length === 0) {
-                    showToast('info', 'No pending records to sync');
-                    return;
-                }
-
-                showToast('info', 'Syncing ' + unsyncedRecords.length + ' record(s)...');
-
-                let syncedCount = 0;
-                for (const record of unsyncedRecords) {
-                    const synced = await syncRecord(record);
-                    if (synced) {
-                        syncedCount++;
-                    }
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-
-                await loadRecords();
-
-                if (syncedCount > 0) {
-                    showToast('success', syncedCount + ' record(s) synced successfully');
-                } else {
-                    showToast('warning', 'Failed to sync records. Please try again.');
-                }
-            } catch (error) {
-                console.error('Sync all records error:', error);
-                showToast('error', 'Failed to sync records');
-            }
-        }
-
-        // ============================================
-        // FORM HANDLING
-        // ============================================
-
-        function validateForm() {
-            const errors = [];
-
-            const patientName = document.getElementById('patientName').value.trim();
-            const age = parseInt(document.getElementById('age').value) || 0;
-            const gender = document.getElementById('gender').value;
-            const diagnosis = document.getElementById('diagnosis').value;
-            const allergyTest = document.getElementById('allergyTest').value;
-            const frequency = document.getElementById('frequency').value;
-            const duration = parseInt(document.getElementById('duration').value) || 0;
-            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
-            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
-
-            if (!patientName) {
-                errors.push('Patient name is required');
-            }
-
-            if (!age || age <= 0) {
-                errors.push('Please enter a valid age');
-            }
-
-            if (!gender) {
-                errors.push('Please select a gender');
-            }
-
-            if (!diagnosis) {
-                errors.push('Please select a diagnosis');
-            }
-
-            if (!allergyTest) {
-                errors.push('Please select allergy test result');
-            }
-
-            if (!frequency) {
-                errors.push('Please select frequency');
-            }
-
-            if (!duration || duration <= 0) {
-                errors.push('Please enter a valid duration in days');
-            }
-
-            const totalAmount = meropenem1gQuantity + (meropenem0_5gQuantity * 0.5);
-
-            if (totalAmount === 0) {
-                errors.push('Please dispense at least one vial');
-            }
-
-            return {
-                isValid: errors.length === 0,
-                errors: errors
             };
         }
 
-        function getFormData() {
-            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
-            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
+        async function deleteRecord(id) {
+            const database = await getDB();
+            const transaction = database.transaction([STORE_NAME], 'readwrite');
+            transaction.objectStore(STORE_NAME).delete(id);
+            records = records.filter(r => r.id !== id);
+        }
 
+        async function getAllRecords() {
+            const database = await getDB();
+            return new Promise((resolve) => {
+                const transaction = database.transaction([STORE_NAME], 'readonly');
+                const request = transaction.objectStore(STORE_NAME).getAll();
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        async function loadRecords() {
+            records = await getAllRecords();
+            records.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            displayRecords();
+            updatePendingBanner();
+        }
+
+        // FORM HANDLING
+        function getFormData() {
+            const m1g = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
+            const m05g = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
             return {
                 patientName: document.getElementById('patientName').value.trim(),
                 age: parseInt(document.getElementById('age').value) || 0,
                 gender: document.getElementById('gender').value,
                 diagnosis: document.getElementById('diagnosis').value,
-                allergyTest: document.getElementById('allergyTest').value,
-                meropenem1gQuantity: meropenem1gQuantity,
-                meropenem0_5gQuantity: meropenem0_5gQuantity,
+                dosing: document.getElementById('dosing').value,
+                sensitivityTest: document.getElementById('sensitivityTest').value, // Updated ID
                 frequency: document.getElementById('frequency').value,
                 duration: parseInt(document.getElementById('duration').value) || 0,
                 pharmacistId: document.getElementById('pharmacistId').value.trim(),
-                totalAmount: meropenem1gQuantity + (meropenem0_5gQuantity * 0.5),
+                meropenem1gQuantity: m1g,
+                meropenem0_5gQuantity: m05g,
+                totalAmount: m1g + (m05g * 0.5),
             };
         }
 
-        function calculateTotalAmount() {
-            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
-            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
-            return meropenem1gQuantity + (meropenem0_5gQuantity * 0.5);
-        }
-
         function updateTotalAmount() {
-            const total = calculateTotalAmount();
-            const meropenem1gQuantity = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
-            const meropenem0_5gQuantity = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
-
-            document.getElementById('totalAmountDisplay').textContent = total.toFixed(1) + ' g';
-            document.getElementById('total1gVials').textContent = meropenem1gQuantity;
-            document.getElementById('total05gVials').textContent = meropenem0_5gQuantity;
+            const m1g = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
+            const m05g = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
+            document.getElementById('totalAmountDisplay').textContent = (m1g + (m05g * 0.5)).toFixed(1) + ' g';
+            document.getElementById('total1gVials').textContent = m1g;
+            document.getElementById('total05gVials').textContent = m05g;
         }
 
         function resetForm() {
@@ -1919,16 +960,15 @@
             updateTotalAmount();
         }
 
-        async function submitRecord(event) {
-            event.preventDefault();
-
-            const validation = validateForm();
-            if (!validation.isValid) {
-                showToast('error', validation.errors[0] || 'Please fill in all required fields');
-                return;
-            }
-
+        async function submitRecord(e) {
+            e.preventDefault();
             const formData = getFormData();
+            
+            // Validation
+            if(!formData.dosing) { showToast('error', 'Please select a dosing amount'); return; }
+            if(!formData.sensitivityTest) { showToast('error', 'Please select Sensitivity Test result'); return; }
+            if(formData.totalAmount === 0) { showToast('error', 'Please add vials'); return; }
+
             const record = {
                 ...formData,
                 createdAt: new Date().toISOString(),
@@ -1936,490 +976,174 @@
                 syncedAt: null
             };
 
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
             try {
-                const newRecord = await addRecord(record);
-
-                if (navigator.onLine) {
-                    showToast('success', 'Record saved. Syncing to Google Sheets...');
-                    const synced = await syncRecord(newRecord);
-                    if (synced) {
-                        showToast('success', 'Record synced to Google Sheets');
-                    } else {
-                        showToast('info', 'Record saved locally. Will sync when possible');
-                    }
-                } else {
-                    showToast('info', 'Record saved locally. Will sync when online');
-                }
-
-                updateStats();
+                await addRecord(record);
+                showToast('success', 'Record Saved Successfully');
+                if(navigator.onLine) syncRecord(record);
+                
                 updatePendingBanner();
-
                 resetForm();
                 showPage('records');
-            } catch (error) {
-                console.error('Submit error:', error);
-                showToast('error', 'Failed to submit record');
+            } catch (err) {
+                showToast('error', 'Save Failed');
+                console.error(err);
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-save"></i> Submit Record';
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             }
         }
 
-        // ============================================
-        // UI UPDATES
-        // ============================================
+        // SYNC LOGIC
+        async function syncRecord(record) {
+            try {
+                const payload = {
+                    timestamp: record.createdAt,
+                    patientName: record.patientName,
+                    age: record.age,
+                    gender: record.gender,
+                    diagnosis: record.diagnosis,
+                    dosing: record.dosing,
+                    sensitivityTest: record.sensitivityTest, // Updated field
+                    meropenem1gQuantity: record.meropenem1gQuantity,
+                    meropenem0_5gQuantity: record.meropenem0_5gQuantity,
+                    frequency: record.frequency,
+                    duration: record.duration,
+                    pharmacistId: record.pharmacistId || '',
+                    syncStatus: 'Synced',
+                };
 
-        function showPage(pageName) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-
-            const targetPage = document.getElementById(pageName + 'Page');
-            if (targetPage) {
-                targetPage.classList.add('active');
-
-                if (pageName === 'record') {
-                    updateTotalAmount();
-                } else if (pageName === 'records') {
-                    displayRecords();
-                } else if (pageName === 'dashboard') {
-                    updateDashboardCharts();
-                    updateDashboardStats();
-                }
+                await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                await updateRecord(record.id, { synced: true, syncedAt: new Date().toISOString() });
+            } catch (err) {
+                console.error("Sync failed", err);
             }
+        }
+
+        async function syncAllRecords() {
+            const unsynced = records.filter(r => !r.synced);
+            if (unsynced.length === 0) return showToast('info', 'No pending records to sync');
+
+            showToast('info', 'Syncing ' + unsynced.length + ' records...');
+            for (const r of unsynced) {
+                await syncRecord(r);
+                await new Promise(res => setTimeout(res, 500)); 
+            }
+            showToast('success', 'Sync Completed');
+            updatePendingBanner();
+            displayRecords();
+        }
+
+        // UI FUNCTIONS
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId + 'Page').classList.add('active');
+            if(pageId === 'records') displayRecords();
         }
 
         function displayRecords() {
-            const filterStatus = document.getElementById('filterStatus')?.value || 'all';
-            const searchQuery = document.getElementById('searchInput')?.value?.toLowerCase()?.trim() || '';
-
-            let filteredRecords = [...records];
-
-            if (filterStatus !== 'all') {
-                const isSynced = filterStatus === 'synced';
-                filteredRecords = records.filter(r => r.synced === isSynced);
-            }
-
-            if (searchQuery) {
-                filteredRecords = filteredRecords.filter(r =>
-                    r.patientName.toLowerCase().includes(searchQuery) ||
-                    r.diagnosis.toLowerCase().includes(searchQuery)
-                );
-            }
-
-            filteredRecords.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
             const tbody = document.getElementById('recordsBody');
-
-            if (!tbody) return;
-
-            if (filteredRecords.length === 0) {
-                tbody.innerHTML = `
-                    <tr id="noRecordsRow">
-                        <td colspan="12" style="text-align: center; padding: 1rem; color: #64748b;">
-                            <i class="fas fa-inbox" style="font-size: 1rem; margin-bottom: 0.25rem;"></i>
-                            <div style="font-size: 0.4rem;">No records found</div>
-                        </td>
-                    </tr>
-                `;
-            } else {
-                tbody.innerHTML = filteredRecords.map(record => {
-                    const isSynced = record.synced;
-                    const badgeClass = isSynced ? 'success' : 'pending';
-                    const badgeText = isSynced ? '✓ Synced' : '⏳ Pending';
-
-                    return `
-                        <tr>
-                            <td>${formatDate(record.createdAt)}</td>
-                            <td>
-                                <div style="font-weight: 600;">${record.patientName}</div>
-                            </td>
-                            <td>${record.age}</td>
-                            <td>${record.gender}</td>
-                            <td>${record.diagnosis}</td>
-                            <td>${record.allergyTest === 'Yes' ? '⚠ Yes' : '✓ No'}</td>
-                            <td>${record.totalAmount.toFixed(1)}g</td>
-                            <td>${record.frequency}</td>
-                            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-                            <td>
-                                <button class="btn btn-danger" style="padding: 0.25rem;" onclick="deleteRecordHandler(${record.id})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            updateStats();
-        }
-
-        async function deleteRecordHandler(id) {
-            if (!confirm('Are you sure you want to delete this record?')) {
+            if (records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; font-size:1.1rem;">No records found</td></tr>';
                 return;
             }
 
-            try {
-                await deleteRecord(id);
-                showToast('success', 'Record deleted successfully');
-                await loadRecords();
-                displayRecords();
-            } catch (error) {
-                console.error('Delete error:', error);
-                showToast('error', 'Failed to delete record');
-            }
-        }
-
-        function updateStats() {
-            const total = records.length;
-            const synced = records.filter(r => r.synced).length;
-            const pending = records.filter(r => !r.synced).length;
-            const totalMeropenem = records.reduce((sum, r) => sum + r.totalAmount, 0).toFixed(1);
-
-            const totalRecordsEl = document.getElementById('totalRecords');
-            const syncedRecordsEl = document.getElementById('syncedRecords');
-            const totalMeropenemEl = document.getElementById('totalMeropenem');
-            const pendingRecordsEl = document.getElementById('pendingRecords');
-
-            if (totalRecordsEl) totalRecordsEl.textContent = total;
-            if (syncedRecordsEl) syncedRecordsEl.textContent = synced;
-            if (totalMeropenemEl) totalMeropenemEl.textContent = totalMeropenem + 'g';
-            if (pendingRecordsEl) pendingRecordsEl.textContent = pending;
-        }
-
-        function updateDashboardStats() {
-            const total = records.length;
-            const synced = records.filter(r => r.synced).length;
-            const pending = records.filter(r => !r.synced).length;
-            const totalMeropenem = records.reduce((sum, r) => sum + r.totalAmount, 0).toFixed(1);
-
-            const dashTotalRecordsEl = document.getElementById('dashTotalRecords');
-            const dashSyncedRecordsEl = document.getElementById('dashSyncedRecords');
-            const dashTotalAmountEl = document.getElementById('dashTotalAmount');
-            const dashPendingCountEl = document.getElementById('dashPendingCount');
-
-            if (dashTotalRecordsEl) dashTotalRecordsEl.textContent = total;
-            if (dashSyncedRecordsEl) dashSyncedRecordsEl.textContent = synced;
-            if (dashTotalAmountEl) dashTotalAmountEl.textContent = totalMeropenem + 'g';
-            if (dashPendingCountEl) dashPendingCountEl.textContent = pending;
+            tbody.innerHTML = records.map(r => `
+                <tr>
+                    <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <div style="font-weight:bold; font-size:1rem;">${r.patientName}</div>
+                    </td>
+                    <td>${r.age}</td>
+                    <td>${r.diagnosis}</td>
+                    <td>${r.dosing}</td>
+                    <td><span class="badge ${r.sensitivityTest === 'نعم' ? 'success' : 'pending'}">${r.sensitivityTest}</span></td>
+                    <td style="font-weight:bold; color:var(--midnight-primary);">${r.totalAmount}g</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteRecordHandler(${r.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
         function updatePendingBanner() {
             const pending = records.filter(r => !r.synced).length;
             const banner = document.getElementById('pendingBanner');
-            const countElement = document.getElementById('pendingCount');
-
             if (pending > 0) {
                 banner.classList.add('visible');
-                countElement.textContent = pending;
+                document.getElementById('pendingCount').textContent = pending;
             } else {
                 banner.classList.remove('visible');
             }
         }
 
-        function updateDashboardCharts() {
-            updateDiagnosisChart();
-            updateGenderChart();
-        }
-
-        function updateDiagnosisChart() {
-            const diagnosisCounts = {};
-
-            records.forEach(r => {
-                diagnosisCounts[r.diagnosis] = (diagnosisCounts[r.diagnosis] || 0) + 1;
-            });
-
-            const maxCount = Math.max(...Object.values(diagnosisCounts), 1);
-            const sortedDiagnoses = Object.entries(diagnosisCounts).sort((a, b) => b[1] - a[1]);
-
-            const chartContainer = document.getElementById('diagnosisChart');
-
-            if (!chartContainer) return;
-
-            if (Object.keys(diagnosisCounts).length === 0) {
-                chartContainer.innerHTML = '<p style="text-align: center; color: #64748b; padding: 1rem;">No data to display</p>';
-                return;
+        async function deleteRecordHandler(id) {
+            if(confirm('Delete this record permanently?')) {
+                await deleteRecord(id);
+                showToast('success', 'Record Deleted');
+                displayRecords();
+                updatePendingBanner();
             }
-
-            chartContainer.innerHTML = `
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th style="width: 40%;">Diagnosis</th>
-                            <th style="width: 15%;">Count</th>
-                            <th style="width: 20%;">Percentage</th>
-                            <th style="width: 25%;">Bar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${sortedDiagnoses.map(([diagnosis, count]) => {
-                            const percentage = ((count / records.length) * 100).toFixed(1);
-                            const barWidth = (count / maxCount) * 100;
-
-                            return `
-                                <tr>
-                                    <td>${diagnosis}</td>
-                                    <td>${count}</td>
-                                    <td>${percentage}%</td>
-                                    <td>
-                                        <div style="background: linear-gradient(90deg, #3b82f6, #2563eb); width: ${barWidth}%; height: 0.75rem; border-radius: 0.5rem; transition: width 0.3s ease; min-width: 2px;"></div>
-                                    </td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
-            `;
         }
-
-        function updateGenderChart() {
-            const genderCounts = { Male: 0, Female: 0, Other: 0 };
-
-            records.forEach(r => {
-                if (genderCounts.hasOwnProperty(r.gender)) {
-                    genderCounts[r.gender]++;
-                }
-            });
-
-            const total = records.length;
-            const chartContainer = document.getElementById('genderChart');
-
-            if (!chartContainer) return;
-
-            if (total === 0) {
-                chartContainer.innerHTML = '<p style="text-align: center; color: #64748b; padding: 1rem;">No data to display</p>';
-                return;
-            }
-
-            const maxCount = Math.max(...Object.values(genderCounts), 1);
-
-            chartContainer.innerHTML = `
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th style="width: 40%;">Gender</th>
-                            <th style="width: 15%;">Count</th>
-                            <th style="width: 20%;">Percentage</th>
-                            <th style="width: 25%;">Bar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${Object.entries(genderCounts).map(([gender, count]) => {
-                            const percentage = ((count / total) * 100).toFixed(1);
-                            const barWidth = (count / maxCount) * 100;
-
-                            return `
-                                <tr>
-                                    <td>${gender}</td>
-                                    <td>${count}</td>
-                                    <td>${percentage}%</td>
-                                    <td>
-                                        <div style="background: linear-gradient(90deg, #8b5cf6, #7c3aed); width: ${barWidth}%; height: 0.75rem; border-radius: 0.5rem; transition: width 0.3s ease; min-width: 2px;"></div>
-                                    </td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        // ============================================
-        // EXPORT TO CSV
-        // ============================================
 
         function exportToCSV() {
-            if (records.length === 0) {
-                showToast('info', 'No records to export');
-                return;
-            }
-
-            const headers = ['Date', 'Patient Name', 'Age', 'Gender', 'Diagnosis', 'Allergy', 'Total Amount (g)', 'Status', 'Frequency', 'Duration (days)', 'Pharmacist ID'];
-
-            let csv = headers.join(',') + '\\n';
-
-            records.forEach(record => {
-                csv += [
-                    formatDate(record.createdAt),
-                    '"' + record.patientName + '"',
-                    record.age,
-                    record.gender,
-                    '"' + record.diagnosis + '"',
-                    record.allergyTest,
-                    record.totalAmount.toFixed(1),
-                    record.synced ? 'Synced' : 'Pending',
-                    record.frequency,
-                    record.duration,
-                    record.pharmacistId || ''
-                ].join(',') + '\\n';
-            });
-
+            if (records.length === 0) return showToast('info', 'No data to export');
+            const headers = ['Date', 'Patient', 'Age', 'Gender', 'Diagnosis', 'Dosing', 'Sensitivity', 'Total(g)', 'Status'];
+            const rows = records.map(r => [
+                r.createdAt, r.patientName, r.age, r.gender, r.diagnosis, r.dosing, r.sensitivityTest, r.totalAmount, r.synced ? 'Synced' : 'Pending'
+            ]);
+            
+            let csv = headers.join(',') + '\n' + rows.map(r => r.join(',')).join('\n');
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'meropenem_records_' + new Date().toISOString().split('T')[0] + '.csv';
-            document.body.appendChild(a);
+            a.download = 'meropenem_export.csv';
             a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            showToast('success', 'Records exported to CSV');
         }
 
-        // ============================================
-        // TOAST NOTIFICATIONS
-        // ============================================
-
-        function showToast(type, message) {
+        function showToast(type, msg) {
             const container = document.getElementById('toastContainer');
-
-            if (!container) return;
-
             const toast = document.createElement('div');
-            toast.className = 'toast ' + type;
-
-            let icon = '';
-            switch(type) {
-                case 'success':
-                    icon = '✓';
-                    break;
-                case 'error':
-                    icon = '✗';
-                    break;
-                case 'warning':
-                    icon = '⚠';
-                    break;
-                default:
-                    icon = 'ⓘ';
-            }
-
-            toast.innerHTML = `
-                <div class="toast-title">${icon} ${type.charAt(0).toUpperCase() + type.slice(1)}:</div>
-                <div class="toast-message">${message}</div>
-            `;
-
+            toast.className = `toast ${type}`;
+            toast.style.borderLeftColor = type === 'success' ? 'var(--success-color)' : (type === 'error' ? 'var(--danger-color)' : 'var(--info-color)');
+            toast.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${msg}`;
             container.appendChild(toast);
-
             setTimeout(() => {
-                toast.style.animation = 'slideOut 0.3s ease-out forwards';
-                setTimeout(() => {
-                    if (container && container.contains(toast)) {
-                        container.removeChild(toast);
-                    }
-                }, 300);
-            }, 3000);
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
         }
 
-        // ============================================
-        // UTILITY FUNCTIONS
-        // ============================================
-
-        function formatDate(dateString) {
-            if (!dateString) return '';
-
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        // ============================================
-        // CONNECTION STATUS
-        // ============================================
-
-        function updateConnectionStatus() {
-            const statusBadge = document.getElementById('connectionStatus');
-            const connectionIcon = document.getElementById('connectionIcon');
-            const connectionText = document.getElementById('connectionText');
-            const homeSyncStatus = document.getElementById('homeSyncStatus');
-
-            if (navigator.onLine) {
-                if (statusBadge) statusBadge.className = 'connection-status online';
-                if (connectionIcon) connectionIcon.textContent = '●';
-                if (connectionText) connectionText.textContent = 'Online';
-                if (homeSyncStatus) homeSyncStatus.textContent = 'Synced';
-            } else {
-                if (statusBadge) statusBadge.className = 'connection-status offline';
-                if (connectionIcon) connectionIcon.textContent = '●';
-                if (connectionText) connectionText.textContent = 'Offline';
-                if (homeSyncStatus) homeSyncStatus.textContent = 'Local';
-            }
-        }
-
-        // ============================================
-        // EVENT LISTENERS
-        // ============================================
-
-        function setupEventListeners() {
-            window.addEventListener('online', updateConnectionStatus);
-            window.addEventListener('offline', updateConnectionStatus);
-
-            const inputElements = ['meropenem1gQuantity', 'meropenem0_5gQuantity'];
-            inputElements.forEach(id => {
-                const input = document.getElementById(id);
-                if (input) {
-                    input.addEventListener('input', updateTotalAmount);
-                }
-            });
-
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', displayRecords);
-            }
-
-            const filterSelect = document.getElementById('filterStatus');
-            if (filterSelect) {
-                filterSelect.addEventListener('change', displayRecords);
-            }
-        }
-
-        // ============================================
         // INITIALIZATION
-        // ============================================
-
         async function initApp() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            const app = document.getElementById('app');
-
             try {
                 await initDB();
                 await loadRecords();
-                setupEventListeners();
-                updateConnectionStatus();
-                showPage('home');
-
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.style.display = 'none';
-                    if (app) app.style.display = 'block';
-                }, 500);
-
-                console.log('App initialized successfully');
-            } catch (error) {
-                console.error('Failed to initialize app:', error);
-                showToast('error', 'Failed to initialize app. Please refresh page.');
-
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.style.display = 'none';
-                    if (app) app.style.display = 'block';
-                }, 500);
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                
+                // Listeners
+                ['meropenem1gQuantity', 'meropenem0_5gQuantity'].forEach(id => {
+                    document.getElementById(id).addEventListener('input', updateTotalAmount);
+                });
+            } catch (err) {
+                console.error(err);
+                alert("Initialization Error. Please refresh.");
             }
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
-
+        // Expose functions
         window.showPage = showPage;
         window.submitRecord = submitRecord;
         window.resetForm = resetForm;
@@ -2427,6 +1151,9 @@
         window.syncAllRecords = syncAllRecords;
         window.exportToCSV = exportToCSV;
         window.updateTotalAmount = updateTotalAmount;
+
+        // Start
+        initApp();
     </script>
 </body>
 </html>
