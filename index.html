@@ -1,1496 +1,749 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Track and manage Meropenem dispensing for Baghdad Teaching Hospital">
-    <meta name="theme-color" content="#191970">
-    <title>Meropenem Tracking System - Baghdad Teaching Hospital</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Meropenem Tracking System Styles - Midnight Theme */
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            /* Midnight Color Scheme */
-            --midnight-primary: #191970;
-            --midnight-dark: #0f172a;
-            --midnight-darker: #020617;
-
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #3b82f6;
-            --purple-color: #8b5cf6;
-            --amber-color: #d97706;
-
-            --bg-color: #f8fafc;
-            --bg-gradient-start: #f8fafc;
-            --bg-gradient-mid: #e2e8f0;
-            --bg-gradient-end: #f1f5f9;
-
-            --border-color: #cbd5e1;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #9ca3af;
-
-            --shadow-sm: 0 4px 6px rgba(0,0,0,0.08);
-            --shadow-md: 0 6px 12px rgba(0,0,0,0.12);
-            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
-
-            --radius-sm: 0.5rem;
-            --radius-md: 0.75rem;
-            --radius-lg: 1rem;
-            --radius-xl: 1.25rem;
-
-            --transition-fast: all 0.2s ease;
-            --transition-normal: all 0.3s ease;
-            --transition-slow: all 0.4s ease;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
-            min-height: 100vh;
-            padding-bottom: 40px; /* Space for footer */
-        }
-
-        /* LOADING SCREEN */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: white;
-            margin-left: 20px;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        /* HEADER */
-        .header {
-            background: linear-gradient(135deg, var(--midnight-primary) 0%, var(--midnight-dark) 100%);
-            color: white;
-            padding: 10px 15px;
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-icon {
-            background: linear-gradient(135deg, var(--warning-color) 0%, var(--amber-color) 100%);
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .app-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            line-height: 1.1;
-        }
-
-        .app-subtitle {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-
-        .connection-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            background: rgba(16, 185, 129, 0.25);
-            color: var(--success-color);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-        }
-
-        /* MAIN CONTENT */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-
-        .page {
-            display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* WELCOME & NAV */
-        .welcome-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .welcome-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-        }
-
-        .welcome-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .nav-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 Columns */
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .nav-card {
-            background: white;
-            border-radius: var(--radius-md);
-            padding: 15px;
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .nav-card:active {
-            transform: scale(0.97);
-            background-color: #f8fafc;
-            border-color: var(--info-color);
-        }
-
-        .nav-card-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: white;
-            margin: 0 auto 10px auto;
-        }
-
-        .nav-card-icon.blue { background: var(--info-color); }
-        .nav-card-icon.emerald { background: var(--success-color); }
-        .nav-card-icon.purple { background: var(--purple-color); }
-        .nav-card-icon.orange { background: var(--warning-color); } /* For GFR */
-
-        .nav-card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .nav-card-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* FORMS & CARDS */
-        .card {
-            background: white;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
-        .card-header {
-            background: var(--midnight-primary);
-            color: white;
-            padding: 12px 15px;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .card-content {
-            padding: 15px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        /* INPUT STYLING - LARGE TOUCH TARGETS */
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--text-primary);
-        }
-
-        label.required::after {
-            content: ' *';
-            color: var(--danger-color);
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 14px;
-            font-size: 18px; /* 18px prevents zoom on iOS */
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background: #fff;
-            color: var(--text-primary);
-            transition: border-color 0.2s;
-            appearance: none;
-            font-family: inherit;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--info-color);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
-
-        /* Custom select arrow */
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 1rem;
-            padding-right: 40px;
-        }
-
-        /* BUTTONS */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 20px;
-            border-radius: var(--radius-sm);
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            border: none;
-            text-decoration: none;
-            width: 100%;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            background: var(--info-color);
-            color: white;
-            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-secondary {
-            background: #e2e8f0;
-            color: var(--text-primary);
-        }
-
-        .btn-danger {
-            background: var(--danger-color);
-            color: white;
-            padding: 8px 12px;
-            width: auto;
-            font-size: 0.9rem;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 700;
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-
-        /* TABLES */
-        .table-container {
-            background: white;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .records-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-            white-space: nowrap;
-        }
-
-        .records-table thead {
-            background: #f1f5f9;
-        }
-
-        .records-table th {
-            padding: 12px 15px;
-            text-align: left;
-            font-weight: 700;
-            color: var(--text-primary);
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .records-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-
-        /* BADGES */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-        .badge.success { background: #dcfce7; color: #166534; }
-        .badge.pending { background: #fef3c7; color: #92400e; }
-
-        /* TOTAL DISPLAY */
-        .total-amount-display {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--midnight-primary);
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        .vials-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .vial-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .vial-count {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--warning-color);
-        }
-
-        /* PENDING BANNER */
-        .pending-banner {
-            background: var(--warning-color);
-            color: white;
-            padding: 15px;
-            border-radius: var(--radius-md);
-            margin-bottom: 20px;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            font-weight: 600;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .pending-banner.visible { display: flex; }
-
-        /* FOOTER */
-        .footer {
-            background: var(--midnight-primary);
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            font-size: 0.9rem;
-            z-index: 1000;
-        }
-
-        /* TOAST */
-        .toast-container {
-            position: fixed;
-            top: 70px;
-            right: 15px;
-            z-index: 2000;
-            width: 300px;
-        }
-
-        .toast {
-            background: white;
-            border-radius: var(--radius-sm);
-            padding: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-            border-left: 5px solid;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        /* --- GFR SPECIFIC STYLES --- */
-        .input-group-inline {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .input-wrapper {
-            flex: 1;
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 10px;
-            border: 2px solid #e2e8f0;
-            border-radius: var(--radius-sm);
-            background: white;
-            flex: 1;
-            justify-content: center;
-            min-width: 100px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .radio-option.selected {
-            border-color: var(--midnight-primary);
-            background: #eff6ff;
-            color: var(--midnight-primary);
-        }
-
-        .radio-option input { display: none; }
-
-        .result-card {
-            background: #f8fafc;
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            margin-top: 20px;
-            text-align: center;
-            border: 2px solid #e2e8f0;
-            display: none;
-        }
-
-        .result-card.visible {
-            display: block;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .result-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--midnight-primary);
-            line-height: 1.1;
-            margin: 10px 0;
-        }
-
-        .ckd-badge {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: white;
-        }
-
-        .stage-g1 { background: #10b981; }
-        .stage-g2 { background: #3b82f6; }
-        .stage-g3a { background: #f59e0b; }
-        .stage-g3b { background: #f97316; }
-        .stage-g4 { background: #ef4444; }
-        .stage-g5 { background: #7f1d1d; }
-
-        .hidden { display: none !important; }
-        .error-msg { color: var(--danger-color); font-size: 0.85rem; margin-top: 5px; display: none; }
-
-        /* RESPONSIVE ADJUSTMENTS */
-        @media (max-width: 600px) {
-            .nav-cards {
-                grid-template-columns: 1fr; /* Stack vertically on mobile */
-            }
-            .nav-card {
-                display: flex;
-                align-items: center;
-                text-align: left;
-                gap: 15px;
-            }
-            .nav-card-icon { margin: 0; }
-
-            .form-row {
-                grid-template-columns: 1fr; /* Stack inputs on mobile */
-                gap: 15px;
-            }
-            .app-title { font-size: 1rem; }
-            .app-subtitle { font-size: 0.75rem; }
-            .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
-            input, select, textarea { min-height: 50px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Pharmacy Training - Antibacterials & Antifungals (Iraq Practice)</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-light: #64748b;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --border: #e2e8f0;
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .quiz-card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 750px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 24px;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    .header p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: #e2e8f0;
+      width: 100%;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .question-meta {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: calc(var(--radius) - 2px);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text);
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: #f0f9ff;
+    }
+
+    .option-btn.correct {
+      background: #dcfce7;
+      border-color: var(--success);
+      color: #14532d;
+      font-weight: 600;
+    }
+
+    .option-btn.incorrect {
+      background: #fee2e2;
+      border-color: var(--danger);
+      color: #7f1d1d;
+    }
+
+    .explanation {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: calc(var(--radius) - 2px);
+      background: #f1f5f9;
+      border-left: 4px solid var(--primary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .footer {
+      padding: 16px 24px 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: calc(var(--radius) - 4px);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .results {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .results h2 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .results p {
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
+  </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading System...</div>
-    </div>
 
-    <!-- Main App Container -->
-    <div id="app" style="display: none;">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <div class="logo-icon">⚕</div>
-                    <div>
-                        <div class="app-title">Meropenem Tracker</div>
-                        <div class="app-subtitle">Baghdad Teaching Hospital</div>
-                    </div>
-                </div>
-                <div id="connectionStatus" class="connection-status">
-                    <span>● Online</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Pending Banner -->
-            <div id="pendingBanner" class="pending-banner">
-                <div>
-                    <span style="font-size:1.1rem;"><i class="fas fa-exclamation-circle"></i> Sync Pending:</span> 
-                    <span id="pendingCount" style="font-size:1.2rem; font-weight:800;">0</span> records
-                </div>
-                <button class="btn btn-primary" style="width: auto; padding: 8px 16px; font-size:0.9rem;" onclick="syncAllRecords()">
-                    Sync Now
-                </button>
-            </div>
-
-            <!-- Home Page -->
-            <div id="homePage" class="page active">
-                <div class="welcome-section">
-                    <h2 class="welcome-title">Welcome Back</h2>
-                    <p class="welcome-subtitle">Baghdad Teaching Hospital • Pharmacy Department</p>
-                </div>
-
-                <!-- Navigation Cards -->
-                <div class="nav-cards">
-                    <div class="nav-card" onclick="showPage('record')">
-                        <div class="nav-card-icon blue">
-                            <i class="fas fa-plus"></i>
-                        </div>
-                        <div>
-                            <div class="nav-card-title">Record Entry</div>
-                            <div class="nav-card-desc">Add new dispensing record</div>
-                        </div>
-                    </div>
-                    <div class="nav-card" onclick="showPage('records')">
-                        <div class="nav-card-icon emerald">
-                            <i class="fas fa-list"></i>
-                        </div>
-                        <div>
-                            <div class="nav-card-title">Records List</div>
-                            <div class="nav-card-desc">View patient history</div>
-                        </div>
-                    </div>
-                    <!-- ADDED GFR NAV CARD -->
-                    <div class="nav-card" onclick="showPage('gfr')">
-                        <div class="nav-card-icon orange">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                        <div>
-                            <div class="nav-card-title">eGFR Calculator</div>
-                            <div class="nav-card-desc">Kidney function tool</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Record Entry Page -->
-            <div id="recordPage" class="page">
-                <a href="#" class="back-btn" onclick="showPage('home')">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
-                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">New Dispensing Record</h2>
-
-                <!-- Total Amount Display -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Total Amount Dispensed</div>
-                    </div>
-                    <div class="card-content">
-                        <div class="total-amount-display" id="totalAmountDisplay">0 g</div>
-                        <div class="vials-container">
-                            <div class="vial-item">
-                                <div class="vial-label">1g Vials</div>
-                                <div class="vial-count" id="total1gVials">0</div>
-                            </div>
-                            <div class="vial-item">
-                                <div class="vial-label">0.5g Vials</div>
-                                <div class="vial-count" id="total05gVials">0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Form -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Patient Information</div>
-                    </div>
-                    <div class="card-content">
-                        <form id="recordForm" onsubmit="submitRecord(event)">
-                            <!-- Name, Age, Gender -->
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required">Patient Name</label>
-                                    <input type="text" id="patientName" required placeholder="Full Name" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="required">Age</label>
-                                    <input type="number" id="age" required min="0" max="150" placeholder="Years" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="required">Gender</label>
-                                    <select id="gender" required>
-                                        <option value="">Select Gender</option>
-                                        <option value="ذكر">ذكر</option>
-                                        <option value="انثى">انثى</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Diagnosis -->
-                            <div class="form-group">
-                                <label class="required">Diagnosis</label>
-                                <select id="diagnosis" required>
-                                    <option value="">Select Diagnosis</option>
-                                    <option value="Acute mastoiditis">Acute mastoiditis</option>
-                                    <option value="Acute rhinosinusitis due to intubation">Acute rhinosinusitis due to intubation</option>
-                                    <option value="Bacterial meningitis">Bacterial meningitis</option>
-                                    <option value="Contaminated blast injury">Contaminated blast injury</option>
-                                    <option value="Gangrenous cellulitis">Gangrenous cellulitis</option>
-                                    <option value="HAP post-op / ventilator-associated">HAP post-op / ventilator-associated</option>
-                                    <option value="Infective bronchiectasis exacerbation">Infective bronchiectasis exacerbation</option>
-                                    <option value="Lung abscess">Lung abscess</option>
-                                    <option value="NVE – acute presentation">NVE – acute presentation</option>
-                                    <option value="Neutropenic sepsis">Neutropenic sepsis</option>
-                                    <option value="Pleural empyema">Pleural empyema</option>
-                                    <option value="Proven acute pancreatitis">Proven acute pancreatitis</option>
-                                    <option value="Pyogenic liver abscess">Pyogenic liver abscess</option>
-                                    <option value="Radical resection">Radical resection</option>
-                                    <option value="Severe CAP admitted to ICU">Severe CAP admitted to ICU</option>
-                                    <option value="Severe diabetic foot infection">Severe diabetic foot infection</option>
-                                    <option value="Severe secondary peritonitis">Severe secondary peritonitis</option>
-                                    <option value="Sepsis">Sepsis</option>
-                                    <option value="Surgical site infection">Surgical site infection</option>
-                                    <option value="Others (specify)">Others (specify)</option>
-                                </select>
-                            </div>
-
-                            <!-- DOSING FIELD (Below Diagnosis) -->
-                            <div class="form-group">
-                                <label class="required">Dosing</label>
-                                <select id="dosing" required>
-                                    <option value="">Select Dose</option>
-                                    <option value="1000 mg">1000 mg</option>
-                                    <option value="500 mg">500 mg</option>
-                                </select>
-                            </div>
-
-                            <!-- Sensitivity Test / Culture (نعم / كلا) -->
-                            <div class="form-group">
-                                <label class="required" style="color: var(--danger-color);">Sensitivity Test / Culture</label>
-                                <select id="sensitivityTest" required style="border-color: var(--danger-color); background-color: #fff5f5;">
-                                    <option value="">Select Result</option>
-                                    <option value="نعم">نعم (Yes)</option>
-                                    <option value="كلا">كلا (No)</option>
-                                </select>
-                            </div>
-
-                            <!-- Duration & Frequency -->
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required">Duration (Days)</label>
-                                    <input type="number" id="duration" required min="1" placeholder="e.g. 7" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="required">Frequency</label>
-                                    <select id="frequency" required>
-                                        <option value="">Select</option>
-                                        <option value="8">8</option>
-                                        <option value="12">12</option>
-                                        <option value="24">24</option>
-                                        <option value="48">48</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Meropenem Dispensing -->
-                            <div style="margin-top:20px; padding-top:20px; border-top:2px dashed #e2e8f0;">
-                                <label style="font-size:1.1rem; color: var(--midnight-primary); margin-bottom:10px; display:block;">
-                                    <i class="fas fa-prescription-bottle-alt"></i> Dispensing Details
-                                </label>
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="required">1g Vials</label>
-                                        <input type="number" id="meropenem1gQuantity" min="0" placeholder="0" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required">0.5g Vials</label>
-                                        <input type="number" id="meropenem0_5gQuantity" min="0" placeholder="0" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Pharmacist ID -->
-                            <div class="form-group" style="margin-top:20px;">
-                                <label>Pharmacist ID (Optional)</label>
-                                <input type="text" id="pharmacistId" placeholder="ID Number" />
-                            </div>
-
-                            <!-- Submit Buttons -->
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary" id="submitBtn">
-                                    <i class="fas fa-save"></i> Submit Record
-                                </button>
-                                <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                                    <i class="fas fa-undo"></i> Clear
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Records List Page -->
-            <div id="recordsPage" class="page">
-                <a href="#" class="back-btn" onclick="showPage('home')">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
-                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">Records List</h2>
-
-                <div class="table-container">
-                    <div class="table-wrapper">
-                        <table class="records-table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Patient</th>
-                                    <th>Age</th>
-                                    <th>Gender</th>
-                                    <th>Diagnosis</th>
-                                    <th>Dosing</th>
-                                    <th>Sensitivity</th>
-                                    <th>Freq</th>
-                                    <th>Total</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recordsBody">
-                                <!-- Rows populated by JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <button class="btn btn-secondary" onclick="exportToCSV()" style="margin-top:10px;">
-                    <i class="fas fa-download"></i> Export CSV
-                </button>
-            </div>
-
-            <!-- NEW eGFR CALCULATOR PAGE -->
-            <div id="gfrPage" class="page">
-                <a href="#" class="back-btn" onclick="showPage('home')">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
-                <h2 style="text-align:center; margin-bottom:15px; font-size:1.4rem;">eGFR Calculator</h2>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Kidney Function</div>
-                    </div>
-                    <div class="card-content">
-                        <!-- Formula Selection -->
-                        <div class="form-group">
-                            <label>Select Formula</label>
-                            <div class="radio-group">
-                                <div class="radio-option selected" onclick="selectFormula('CKD-EPI', this)">CKD-EPI (2021)</div>
-                                <div class="radio-option" onclick="selectFormula('MDRD', this)">MDRD</div>
-                                <div class="radio-option" onclick="selectFormula('Cockcroft', this)">Cockcroft–Gault</div>
-                                <input type="hidden" id="selectedFormula" value="CKD-EPI">
-                            </div>
-                        </div>
-
-                        <!-- Inputs -->
-                        <div class="form-group">
-                            <label>Age (Years)</label>
-                            <input type="number" id="calcAge" placeholder="e.g. 45" inputmode="numeric">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Sex</label>
-                            <select id="calcSex">
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Serum Creatinine</label>
-                            <div class="input-group-inline">
-                                <div class="input-wrapper">
-                                    <input type="number" id="calcCreatinine" placeholder="0.0 - 10.0" step="0.01" inputmode="decimal">
-                                </div>
-                                <select id="calcUnit" style="width: 110px;">
-                                    <option value="mgdl">mg/dL</option>
-                                    <option value="umol">µmol/L</option>
-                                </select>
-                            </div>
-                            <div id="creatinineWarning" class="error-msg"></div>
-                        </div>
-
-                        <!-- Weight (Only for Cockcroft) -->
-                        <div class="form-group hidden" id="weightGroup">
-                            <label>Weight (kg) <span style="font-weight:400; font-size:0.8rem; color:#666;">(Required for Cockcroft–Gault)</span></label>
-                            <input type="number" id="calcWeight" placeholder="e.g. 75" inputmode="numeric">
-                        </div>
-
-                        <!-- Calculate Button -->
-                        <button class="btn" onclick="calculateEGFR()">Calculate eGFR</button>
-
-                        <!-- Results -->
-                        <div id="resultCard" class="result-card">
-                            <div class="result-value" id="resultValue">--</div>
-                            <div class="result-unit" id="resultUnit">mL/min/1.73m²</div>
-                            <div id="ckdBadge" class="ckd-badge hidden">Stage --</div>
-                            <div id="resultNote" class="result-note" style="margin-top: 15px; font-size: 0.9rem; color: #64748b; font-style: italic;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                Baghdad Teaching Hospital • MADE BY LUAY
-            </div>
-        </footer>
-
-        <!-- Toast Container -->
-        <div class="toast-container" id="toastContainer"></div>
-    </div>
-
-    <script>
-        /* Meropenem Tracking System JS - Responsive Version */
-
-        // CONFIGURATION
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwI12_KSHQ95cew4Q6f9W9je2_lCSgifqxDFayupc7deCypjUrZN6ROL66GzIB_elJH/exec';
-        
-        const DB_NAME = 'MeropenemTrackerDB';
-        const DB_VERSION = 1;
-        const STORE_NAME = 'submissions';
-
-        // STATE
-        let db = null;
-        let records = [];
-
-        // DATABASE FUNCTIONS
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onerror = () => reject(request.error);
-                request.onupgradeneeded = (event) => {
-                    const database = event.target.result;
-                    if (!database.objectStoreNames.contains(STORE_NAME)) {
-                        const objectStore = database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-                        objectStore.createIndex('synced', 'synced', { unique: false });
-                        objectStore.createIndex('createdAt', 'createdAt', { unique: false });
-                    }
-                };
-                request.onsuccess = (event) => {
-                    db = event.target.result;
-                    resolve(db);
-                };
-            });
-        }
-
-        function getDB() {
-            return new Promise((resolve, reject) => {
-                if (db) { resolve(db); return; }
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onsuccess = (e) => { db = e.target.result; resolve(db); };
-                request.onerror = (e) => reject(e.target.error);
-            });
-        }
-
-        async function addRecord(record) {
-            const database = await getDB();
-            return new Promise((resolve, reject) => {
-                const transaction = database.transaction([STORE_NAME], 'readwrite');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const request = objectStore.add(record);
-                request.onsuccess = () => {
-                    const newRecord = { ...record, id: request.result };
-                    records.unshift(newRecord);
-                    resolve(newRecord);
-                };
-                request.onerror = (e) => reject(e.target.error);
-            });
-        }
-
-        async function updateRecord(id, updates) {
-            const database = await getDB();
-            return new Promise((resolve, reject) => {
-                const transaction = database.transaction([STORE_NAME], 'readwrite');
-                const objectStore = transaction.objectStore(STORE_NAME);
-                const getRequest = objectStore.get(id);
-                
-                getRequest.onerror = (e) => reject(e);
-                
-                getRequest.onsuccess = () => {
-                    const data = getRequest.result;
-                    if (data) {
-                        const updatedRecord = { ...data, ...updates };
-                        const putRequest = objectStore.put(updatedRecord);
-                        
-                        putRequest.onsuccess = () => {
-                            const index = records.findIndex(r => r.id === id);
-                            if (index !== -1) {
-                                records[index] = { ...updatedRecord };
-                            }
-                            resolve(updatedRecord);
-                        };
-                        
-                        putRequest.onerror = (e) => reject(e);
-                    } else {
-                        reject(new Error("Record not found"));
-                    }
-                };
-            });
-        }
-
-        async function deleteRecord(id) {
-            const database = await getDB();
-            const transaction = database.transaction([STORE_NAME], 'readwrite');
-            const objectStore = transaction.objectStore(STORE_NAME);
-            
-            return new Promise((resolve, reject) => {
-                const request = objectStore.delete(id);
-                request.onsuccess = () => {
-                    records = records.filter(r => r.id !== id);
-                    resolve();
-                };
-                request.onerror = (e) => reject(e);
-            });
-        }
-
-        async function getAllRecords() {
-            const database = await getDB();
-            return new Promise((resolve) => {
-                const transaction = database.transaction([STORE_NAME], 'readonly');
-                const request = transaction.objectStore(STORE_NAME).getAll();
-                request.onsuccess = () => resolve(request.result);
-            });
-        }
-
-        async function loadRecords() {
-            records = await getAllRecords();
-            records.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            displayRecords();
-            updatePendingBanner();
-        }
-
-        // FORM HANDLING
-        function getFormData() {
-            const m1g = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
-            const m05g = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
-            return {
-                patientName: document.getElementById('patientName').value.trim(),
-                age: parseInt(document.getElementById('age').value) || 0,
-                gender: document.getElementById('gender').value,
-                diagnosis: document.getElementById('diagnosis').value,
-                dosing: document.getElementById('dosing').value,
-                sensitivityTest: document.getElementById('sensitivityTest').value,
-                frequency: document.getElementById('frequency').value,
-                duration: parseInt(document.getElementById('duration').value) || 0,
-                pharmacistId: document.getElementById('pharmacistId').value.trim(),
-                meropenem1gQuantity: m1g,
-                meropenem0_5gQuantity: m05g,
-                totalAmount: m1g + (m05g * 0.5),
-            };
-        }
-
-        function updateTotalAmount() {
-            const m1g = parseInt(document.getElementById('meropenem1gQuantity').value) || 0;
-            const m05g = parseInt(document.getElementById('meropenem0_5gQuantity').value) || 0;
-            document.getElementById('totalAmountDisplay').textContent = (m1g + (m05g * 0.5)).toFixed(1) + ' g';
-            document.getElementById('total1gVials').textContent = m1g;
-            document.getElementById('total05gVials').textContent = m05g;
-        }
-
-        function resetForm() {
-            document.getElementById('recordForm').reset();
-            updateTotalAmount();
-        }
-
-        async function submitRecord(e) {
-            e.preventDefault();
-            const formData = getFormData();
-            
-            // Validation
-            if(!formData.dosing) { showToast('error', 'Please select a dosing amount'); return; }
-            if(!formData.sensitivityTest) { showToast('error', 'Please select Sensitivity Test result'); return; }
-            if(formData.totalAmount === 0) { showToast('error', 'Please add vials'); return; }
-
-            const btn = document.getElementById('submitBtn');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-            try {
-                // 1. Add to Local DB (Status: pending)
-                const newRecord = await addRecord({
-                    ...formData,
-                    createdAt: new Date().toISOString(),
-                    synced: false,
-                    syncedAt: null
-                });
-
-                // 2. Sync Logic
-                if (navigator.onLine) {
-                    try {
-                        // We explicitly await syncRecord now
-                        await syncRecord(newRecord);
-                        // If sync succeeds, show ONE success message
-                        showToast('success', 'Record Saved & Synced Successfully');
-                    } catch (syncErr) {
-                        // If sync fails, show ONE pending message
-                        console.error("Sync failed", syncErr);
-                        showToast('info', 'Record Saved Locally (Pending Sync)');
-                    }
-                } else {
-                    showToast('info', 'Saved Locally (No Internet)');
-                }
-
-                // 3. Update UI
-                updatePendingBanner();
-                resetForm();
-                showPage('records');
-            } catch (err) {
-                showToast('error', 'Save Failed');
-                console.error(err);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        }
-
-        // SYNC LOGIC
-        async function syncRecord(record) {
-            // DUPLICATE PREVENTION: If already synced, do nothing
-            if (record.synced) return;
-
-            const payload = {
-                timestamp: record.createdAt,
-                patientName: record.patientName,
-                age: record.age,
-                gender: record.gender,
-                diagnosis: record.diagnosis,
-                dosing: record.dosing,
-                sensitivityTest: record.sensitivityTest,
-                frequency: record.frequency,
-                duration: record.duration,
-                pharmacistId: record.pharmacistId || '',
-                meropenem1gQuantity: record.meropenem1gQuantity,
-                meropenem0_5gQuantity: record.meropenem0_5gQuantity,
-                syncStatus: 'Synced',
-            };
-
-            await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            // This await now waits for the DB to update and the array to sync
-            await updateRecord(record.id, { synced: true, syncedAt: new Date().toISOString() });
-        }
-
-        async function syncAllRecords() {
-            const unsynced = records.filter(r => !r.synced);
-            if (unsynced.length === 0) return showToast('info', 'No pending records to sync');
-
-            showToast('info', 'Syncing ' + unsynced.length + ' records...');
-            let successCount = 0;
-
-            for (const r of unsynced) {
-                try {
-                    await syncRecord(r);
-                    successCount++;
-                } catch (e) {
-                    console.error("Failed to sync record", r.id, e);
-                }
-                // Small delay between requests to be safe
-                await new Promise(res => setTimeout(res, 500)); 
-            }
-
-            if (successCount > 0) {
-                showToast('success', successCount + ' records synced');
-            } else {
-                showToast('error', 'Sync failed. Check connection.');
-            }
-            
-            updatePendingBanner();
-            displayRecords();
-        }
-
-        // UI FUNCTIONS
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId + 'Page').classList.add('active');
-            if(pageId === 'records') displayRecords();
-        }
-
-        function displayRecords() {
-            const tbody = document.getElementById('recordsBody');
-            if (records.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px; font-size:1.1rem;">No records found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = records.map(r => `
-                <tr>
-                    <td>${new Date(r.createdAt).toLocaleDateString()}</td>
-                    <td>
-                        <div style="font-weight:bold; font-size:1rem;">${r.patientName}</div>
-                    </td>
-                    <td>${r.age}</td>
-                    <td>${r.gender}</td>
-                    <td>${r.diagnosis}</td>
-                    <td>${r.dosing}</td>
-                    <td><span class="badge ${r.sensitivityTest === 'نعم' ? 'success' : 'pending'}">${r.sensitivityTest}</span></td>
-                    <td>${r.frequency}</td>
-                    <td style="font-weight:bold; color:var(--midnight-primary);">${r.totalAmount}g</td>
-                    <td>
-                        <button class="btn btn-danger" onclick="deleteRecordHandler(${r.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function updatePendingBanner() {
-            const pending = records.filter(r => !r.synced).length;
-            const banner = document.getElementById('pendingBanner');
-            if (pending > 0) {
-                banner.classList.add('visible');
-                document.getElementById('pendingCount').textContent = pending;
-            } else {
-                banner.classList.remove('visible');
-            }
-        }
-
-        async function deleteRecordHandler(id) {
-            if(confirm('Delete this record permanently?')) {
-                await deleteRecord(id);
-                showToast('success', 'Record Deleted');
-                displayRecords();
-                updatePendingBanner();
-            }
-        }
-
-        function exportToCSV() {
-            if (records.length === 0) return showToast('info', 'No data to export');
-            const headers = ['Date', 'Patient', 'Age', 'Gender', 'Diagnosis', 'Dosing', 'Sensitivity', 'Frequency', 'Total(g)', 'Status'];
-            const rows = records.map(r => [
-                r.createdAt, r.patientName, r.age, r.gender, r.diagnosis, r.dosing, r.sensitivityTest, r.frequency, r.totalAmount, r.synced ? 'Synced' : 'Pending'
-            ]);
-            
-            let csv = headers.join(',') + '\n' + rows.map(r => r.join(',')).join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'meropenem_export.csv';
-            a.click();
-        }
-
-        function showToast(type, msg) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.style.borderLeftColor = type === 'success' ? 'var(--success-color)' : (type === 'error' ? 'var(--danger-color)' : 'var(--info-color)');
-            toast.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${msg}`;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        // === GFR CALCULATOR LOGIC ===
-        let currentFormula = 'CKD-EPI';
-
-        function selectFormula(formula, element) {
-            currentFormula = formula;
-            
-            // Update UI
-            document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-            document.getElementById('selectedFormula').value = formula;
-
-            // Show/Hide Weight
-            const weightGroup = document.getElementById('weightGroup');
-            if (formula === 'Cockcroft') {
-                weightGroup.classList.remove('hidden');
-            } else {
-                weightGroup.classList.add('hidden');
-            }
-
-            // Hide previous results
-            document.getElementById('resultCard').classList.remove('visible');
-        }
-
-        function calculateEGFR() {
-            // 1. Get Inputs
-            const age = parseFloat(document.getElementById('calcAge').value);
-            const sex = document.getElementById('calcSex').value;
-            let scr = parseFloat(document.getElementById('calcCreatinine').value);
-            const unit = document.getElementById('calcUnit').value;
-            const weight = parseFloat(document.getElementById('calcWeight').value); // Only used for Cockcroft
-
-            // 2. Validation
-            const warningEl = document.getElementById('creatinineWarning');
-            warningEl.style.display = 'none';
-
-            if (!age || !scr) {
-                showToast('error', 'Please enter Age and Creatinine');
-                return;
-            }
-
-            if (age < 0 || age > 120) {
-                showToast('error', 'Please enter a valid Age (0-120)');
-                return;
-            }
-
-            // Check Unit Conversion (mg/dL to µmol/L factor ~ 88.4)
-            if (unit === 'umol') {
-                scr = scr / 88.4;
-            }
-
-            // Extreme Value Warning
-            if (scr > 10 || scr < 0.2) {
-                warningEl.textContent = `Warning: Creatinine value (${scr.toFixed(2)} mg/dL) seems unusual.`;
-                warningEl.style.display = 'block';
-            }
-
-            // 3. Formulas
-            let eGFR = 0;
-            let displayUnit = 'mL/min/1.73m²';
-            let stage = '';
-            let stageClass = '';
-            let note = '';
-
-            // Formula Constants for CKD-EPI (2021) - Simplified (assuming non-black per clean UI req)
-            // Male: k=0.9, a=-0.302
-            // Female: k=0.7, a=-0.241
-            const k = (sex === 'male') ? 0.9 : 0.7;
-            const a = (sex === 'male') ? -0.302 : -0.241;
-
-            if (currentFormula === 'CKD-EPI') {
-                eGFR = 142 * Math.pow(Math.min(scr/k, 1), a) * Math.pow(Math.max(scr/k, 1), -1.200) * Math.pow(0.9938, age);
-                if (sex === 'female') eGFR *= 1.012;
-                note = "Recommended for CKD staging";
-            } 
-            else if (currentFormula === 'MDRD') {
-                // MDRD (4-variable) - Simplified
-                eGFR = 175 * Math.pow(scr, -1.154) * Math.pow(age, -0.203);
-                if (sex === 'female') eGFR *= 0.742;
-                note = "Recommended for CKD staging";
-            } 
-            else if (currentFormula === 'Cockcroft') {
-                if (!weight) {
-                    showToast('error', 'Weight is required for Cockcroft–Gault');
-                    document.getElementById('calcWeight').focus();
-                    return;
-                }
-                displayUnit = 'mL/min'; // Cockcroft is not BSA adjusted
-                eGFR = ((140 - age) * weight) / (72 * scr);
-                if (sex === 'female') eGFR *= 0.85;
-                note = "Recommended for drug dose adjustment";
-            }
-
-            // 4. Determine CKD Stage (if applicable)
-            if (currentFormula !== 'Cockcroft') {
-                if (eGFR >= 90) { stage = 'G1 (Normal)'; stageClass = 'stage-g1'; }
-                else if (eGFR >= 60) { stage = 'G2 (Mild)'; stageClass = 'stage-g2'; }
-                else if (eGFR >= 45) { stage = 'G3a (Moderate)'; stageClass = 'stage-g3a'; }
-                else if (eGFR >= 30) { stage = 'G3b (Mod-Severe)'; stageClass = 'stage-g3b'; }
-                else if (eGFR >= 15) { stage = 'G4 (Severe)'; stageClass = 'stage-g4'; }
-                else { stage = 'G5 (Kidney Failure)'; stageClass = 'stage-g5'; }
-            }
-
-            // 5. Display Results
-            document.getElementById('resultValue').textContent = eGFR.toFixed(1);
-            document.getElementById('resultUnit').textContent = displayUnit;
-            document.getElementById('resultNote').textContent = note;
-
-            const badge = document.getElementById('ckdBadge');
-            if (stage) {
-                badge.textContent = stage;
-                badge.className = `ckd-badge ${stageClass}`;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-
-            document.getElementById('resultCard').classList.add('visible');
-        }
-
-        // INITIALIZATION
-        async function initApp() {
-            try {
-                await initDB();
-                await loadRecords();
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                
-                // Listeners
-                ['meropenem1gQuantity', 'meropenem0_5gQuantity'].forEach(id => {
-                    document.getElementById(id).addEventListener('input', updateTotalAmount);
-                });
-            } catch (err) {
-                console.error(err);
-                alert("Initialization Error. Please refresh.");
-            }
-        }
-
-        // Expose functions
-        window.showPage = showPage;
-        window.submitRecord = submitRecord;
-        window.resetForm = resetForm;
-        window.deleteRecordHandler = deleteRecordHandler;
-        window.syncAllRecords = syncAllRecords;
-        window.exportToCSV = exportToCSV;
-        window.updateTotalAmount = updateTotalAmount;
-        window.selectFormula = selectFormula;
-        window.calculateEGFR = calculateEGFR;
-
-        // Start
-        initApp();
-    </script>
+<div class="quiz-card">
+  <div class="header">
+    <h1>Summer Training Guide Evaluation</h1>
+    <p>30 Antibacterial & 10 Antifungal Community Pharmacy MCQs (Iraq Practice)</p>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+
+  <div id="quiz-body" class="content">
+    <div class="question-meta" id="question-number">Question 1 of 40</div>
+    <div class="question-text" id="question-text">Loading...</div>
+    <div class="options" id="options-container"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+
+  <div class="footer" id="footer">
+    <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    // --- 30 ANTIBACTERIAL MCQS ---
+    {
+      question: "1. Amoxicillin is co-formulated with Clavulanic acid (Augmentin) to achieve which primary therapeutic objective at the community pharmacy level?",
+      options: [
+        "Inhibit bacterial beta-lactamase enzymes and protect amoxicillin from destruction",
+        "Enhance renal excretion and delay hepatic clearance",
+        "Block bacterial 50S ribosomal protein translation",
+        "Prevent gastrointestinal upset and acid degradation in the stomach"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Clavulanic acid acts as a suicide beta-lactamase inhibitor, restoring amoxicillin's spectrum against beta-lactamase-producing organisms."
+    },
+    {
+      question: "2. Which extended-spectrum penicillin derivative is commonly combined with Tazobactam for severe nosocomial and pseudomonal infections?",
+      options: ["Ampicillin", "Piperacillin", "Oxacillin", "Penicillin V"],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Piperacillin/Tazobactam provides extended-spectrum coverage against Gram-negative pathogens, including <i>Pseudomonas aeruginosa</i>."
+    },
+    {
+      question: "3. A patient comes to your pharmacy with a prescription for Piocefix 400 mg (Cefixime by Pioneer Co.). What advice should you provide regarding common gastrointestinal side effects?",
+      options: [
+        "It may cause mild diarrhea or stomach upset; take it with food if stomach upset occurs",
+        "It causes severe immediate hair loss after 3 days of use",
+        "It must be taken with a glass of milk to prevent bone damage",
+        "It causes severe sleepiness and cannot be taken during the daytime"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Piocefix (Cefixime by Pioneer, Iraq) is a widely prescribed oral 3rd-generation cephalosporin. Mild GI disturbances like diarrhea or nausea are its most frequent side effects."
+    },
+    {
+      question: "4. A mother visits the pharmacy to pick up Piolexine oral suspension (Cephalexin by Pioneer Co.) for her child. What important counseling tip should you give her about storing the reconstituted bottle?",
+      options: [
+        "Keep it at room temperature in direct sunlight for up to 30 days",
+        "Keep it refrigerated (2°C–8°C) and discard any remaining portion after 14 days",
+        "Freeze the bottle solid between every dose",
+        "Mix the suspension with boiling tea right before administration"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Reconstituted oral Cephalexin (Piolexine) suspension maintains stability best in the refrigerator (2°C–8°C) for up to 14 days."
+    },
+    {
+      question: "5. Why is Ceftriaxone strictly avoided in neonates under 28 days of age?",
+      options: [
+        "Risk of acute tubular necrosis and ototoxicity",
+        "Biliary sludging, hyperbilirubinemia, and fatal calcium-ceftriaxone precipitation",
+        "High risk of gray baby syndrome",
+        "Immediate systemic tendon rupture"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Ceftriaxone displaces bilirubin from albumin (causing kernicterus) and precipitates in organs when combined with IV calcium."
+    },
+    {
+      question: "6. Which 4th-generation cephalosporin possesses balanced activity against both Gram-positive organisms and Pseudomonas aeruginosa?",
+      options: ["Cefuroxime", "Cefepime", "Cefdinir", "Ceftaroline"],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Cefepime is a 4th-generation cephalosporin with enhanced outer-membrane penetration and resistance to beta-lactamases."
+    },
+    {
+      question: "7. When dispensing Zinax 500 mg tablets (Cefuroxime axetil by Pioneer Co.), how should you advise the patient to take the medication to ensure optimal absorption?",
+      options: [
+        "Take immediately after a meal, as food enhances oral absorption",
+        "Take on an empty stomach at least 2 hours before meals",
+        "Crush the tablet and dissolve it in lemon juice",
+        "Take strictly at bedtime with an antacid tablet"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Cefuroxime axetil (Zinax / Zinnat) oral tablets have significantly increased bioavailability when taken after meals."
+    },
+    {
+      question: "8. Imipenem is formulated in combination with Cilastatin to prevent which physiological process?",
+      options: [
+        "Metabolism by renal dehydropeptidase-I in the proximal tubules",
+        "Hepatic glucuronidation and excretion",
+        "Precipitation in cardiac tissue",
+        "Degradation by stomach gastric acid"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Cilastatin inhibits renal dehydropeptidase-I, preventing imipenem's conversion into nephrotoxic metabolites and preserving active drug levels."
+    },
+    {
+      question: "9. A patient is prescribed Cipro-Pioneer 500 mg (Ciprofloxacin by Pioneer Co.) for a UTI. What advice should you give regarding mineral supplements like iron or calcium?",
+      options: [
+        "Take them together at the exact same time to boost absorption",
+        "Separate taking Cipro-Pioneer from mineral supplements by at least 2 hours before or 6 hours after",
+        "Dissolve the tablet in milk to protect the stomach",
+        "Chew the tablet together with multivitamin tablets"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Divalent and trivalent cations (calcium, iron, magnesium, aluminum) chelate with Ciprofloxacin (Cipro-Pioneer), drastically reducing its gastrointestinal absorption."
+    },
+    {
+      question: "10. Rapid intravenous administration of Vancomycin can trigger 'Red Man Syndrome'. How should the pharmacist advise managing this reaction?",
+      options: [
+        "Discontinue the drug permanently due to IgE anaphylaxis",
+        "Slow down the IV infusion rate and pre-treat with antihistamines",
+        "Switch immediately to high-dose oral vancomycin",
+        "Administer epinephrine and IV corticosteroids immediately"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Red Man Syndrome is a non-immunologic, rate-dependent histamine release caused by fast IV infusion; slowing the infusion rate resolves it."
+    },
+    {
+      question: "11. Why is oral Vancomycin prescribed in community/hospital settings, given that it is not systemically absorbed?",
+      options: [
+        "To treat systemic bacteremia locally",
+        "To eradicate localized Clostridioides difficile colitis in the gut lumen",
+        "To bypass hepatic first-pass clearance",
+        "To protect the kidneys from systemic exposure"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Oral vancomycin remains unabsorbed in the GI lumen, concentrating directly at the site of C. difficile bowel infection."
+    },
+    {
+      question: "12. Daptomycin should NEVER be chosen to treat pulmonary infections or pneumonia because of which reason?",
+      options: [
+        "It cannot penetrate alveolar tissue",
+        "It is inactivated by pulmonary surfactant",
+        "It causes immediate acute bronchospasm",
+        "It lacks activity against Gram-positive cocci"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Pulmonary surfactant binds and inactivates Daptomycin, rendering it clinically ineffective for lung infections."
+    },
+    {
+      question: "13. Gentamicin belongs to which antibiotic class that acts by binding to the 30S ribosomal subunit to cause mRNA misreading?",
+      options: ["Macrolides", "Aminoglycosides", "Tetracyclines", "Lincosamides"],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Aminoglycosides bind irreversibly to the 30S subunit, disrupting bacterial protein synthesis."
+    },
+    {
+      question: "14. A patient receiving prolonged Gentamicin therapy should be routinely evaluated for signs of which toxicities?",
+      options: [
+        "Hepatic steatosis and pulmonary edema",
+        "Nephrotoxicity and Ototoxicity (vestibular/auditory damage)",
+        "Tendonitis and hypoglycemia",
+        "Optic neuritis and blood dyscrasias"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Aminoglycosides concentrate in renal tubules and inner ear endolymph, posing renal and ototoxic risks."
+    },
+    {
+      question: "15. Why are Tetracyclines contraindicated in pregnant women and children under 8 years of age?",
+      options: [
+        "Risk of premature epiphyseal closure and bone fractures",
+        "Calcium chelation causing permanent tooth discoloration and enamel hypoplasia",
+        "High risk of fatal hepatic necrosis",
+        "Development of severe aplastic anemia"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Tetracyclines readily chelate calcium ions, depositing into calcifying bones and teeth in growing pediatric patients."
+    },
+    {
+      question: "16. Which tetracycline derivative does NOT require dosage adjustment in patients with renal impairment due to primary elimination via feces/bile?",
+      options: ["Tetracycline", "Doxycycline", "Oxytetracycline", "Demeclocycline"],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Doxycycline is primarily eliminated via non-renal biliary excretion, making it safe for patients with renal compromise."
+    },
+    {
+      question: "17. A patient picking up Doxycycline capsules should receive which practical counseling instruction?",
+      options: [
+        "Take right before bedtime with a small sip of water",
+        "Take with a full glass of water and remain upright for 30 minutes to prevent esophagitis",
+        "Crush the capsule and mix with milk or yogurt",
+        "Take simultaneously with calcium or iron supplements for optimal uptake"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Doxycycline can lodge in the esophagus and cause severe mucosal ulceration; staying upright with adequate fluid prevents this."
+    },
+    {
+      question: "18. A customer asks how to take Azithrocin 500 mg tablets (Azithromycin by Awamedica) prescribed for a 3-day course. What is the standard daily dosing advice?",
+      options: [
+        "Take 1 tablet every 4 hours continuously for 10 days",
+        "Take 1 tablet once daily at the same time each day for 3 consecutive days",
+        "Take 2 tablets every 6 hours only when feeling feverish",
+        "Dissolve 3 tablets in warm water and drink all at once"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Azithromycin (Azithrocin / Zithromax) has extensive tissue penetration and a long half-life (~68 hours), permitting simple once-daily dosing over 3 to 5 days."
+    },
+    {
+      question: "19. Macrolide antibiotics (e.g., Erythromycin, Clarithromycin) carry a clinical warning regarding which cardiovascular adverse effect?",
+      options: ["Sinus bradycardia", "QT interval prolongation and risk of Torsades de Pointes", "Hypertensive crisis", "Heart block"],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Macrolides block cardiac potassium channels, delaying repolarization and risking fatal ventricular arrhythmias."
+    },
+    {
+      question: "20. Why do Erythromycin and Clarithromycin interact with many chronic medications (like simvastatin and warfarin)?",
+      options: [
+        "They induce intestinal P-glycoprotein efflux pumps",
+        "They act as potent inhibitors of hepatic CYP3A4 enzymes",
+        "They cause systemic renal tubular dysfunction",
+        "They displace drugs from serum albumin binding sites"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> CYP3A4 inhibition by clarithromycin/erythromycin slows the clearance of co-administered substrates, raising toxicity risks."
+    },
+    {
+      question: "21. Clindamycin therapy carries a well-known black box warning for predisposing patients to which gastrointestinal complication?",
+      options: [
+        "Severe peptic ulcer disease",
+        "Clostridioides difficile pseudomembranous colitis",
+        "Acute ischemic bowel disease",
+        "Esophageal stricture"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Clindamycin heavily alters normal colonic flora, facilitating C. difficile overgrowth and toxin release."
+    },
+    {
+      question: "22. A patient taking Klacimed 500 mg (Clarithromycin by Awamedica) reports an unusual side effect in their mouth. Which common, harmless side effect is most likely occurring?",
+      options: [
+        "A metallic or bitter taste alteration (dysgeusia)",
+        "Bright blue discoloration of the tongue",
+        "Sudden loosening of the teeth",
+        "Numbness of the lower lip lasting for weeks"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Dysgeusia (a metallic or altered taste) is a very common, temporary side effect experienced by patients taking Clarithromycin (Klacid / Klacimed)."
+    },
+    {
+      question: "23. What is the most frequent gastrointestinal side effect patients experience when taking Augmentin or Amoxiclav (Amoxicillin + Clavulanate)?",
+      options: [
+        "Diarrhea and abdominal cramping",
+        "Severe constipation lasting several days",
+        "Bright blue colored stools",
+        "Immediate total loss of appetite for a month"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Clavulanic acid stimulates intestinal motility, making diarrhea and stomach cramping the most frequent complaints with Augmentin / Amoxiclav."
+    },
+    {
+      question: "24. Ciprofloxacin exhibits its strongest antibacterial activity against which group of organisms?",
+      options: [
+        "Gram-positive cocci and anaerobes",
+        "Aerobic Gram-negative bacilli, including Pseudomonas aeruginosa",
+        "Atypical mycobacteria only",
+        "Oral spirochetes"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Ciprofloxacin is the most potent fluoroquinolone against Gram-negative bacilli, including Pseudomonas."
+    },
+    {
+      question: "25. A patient taking Ciprofloxacin presents with pain and swelling over the back of the heel. What FDA black box warning applies?",
+      options: [
+        "Acute rhabdomyolysis",
+        "Tendonitis and risk of tendon rupture (especially Achilles tendon)",
+        "Pathologic bone fracture",
+        "Osteonecrosis"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Fluoroquinolones damage connective tissue, increasing the risk of tendonitis and Achilles tendon rupture."
+    },
+    {
+      question: "26. Co-trimoxazole represents a synergistic combination of Sulfamethoxazole and Trimethoprim. How do these two drugs interact?",
+      options: [
+        "They disrupt cell wall peptidoglycan cross-linking at different steps",
+        "They produce sequential blockade of bacterial folic acid synthesis",
+        "They enhance each other's biliary excretion rate",
+        "They prevent ribosomal translocation on the 50S subunit"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Sulfamethoxazole inhibits dihydropteroate synthase, and Trimethoprim inhibits dihydrofolate reductase, blocking folate production sequentially."
+    },
+    {
+      question: "27. Trimethoprim-Sulfamethoxazole can precipitate acute intravascular hemolysis in patients with which inherited deficiency?",
+      options: [
+        "G6PD (Glucose-6-Phosphate Dehydrogenase) deficiency",
+        "Factor VIII deficiency",
+        "Vitamin K deficiency",
+        "Glucuronosyltransferase deficiency"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Sulfonamides induce oxidative stress; red blood cells lacking G6PD cannot process oxidative stress, leading to hemolysis."
+    },
+    {
+      question: "28. When dispensing Metronidazole for a patient, what essential lifestyle modification must be communicated?",
+      options: [
+        "Avoid high-fat meals during therapy",
+        "Avoid alcohol completely during treatment and for at least 48 hours after due to a disulfiram-like reaction",
+        "Avoid intake of direct sunlight and UV radiation",
+        "Take on an empty stomach with acidic fruit juice"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Metronidazole blocks aldehyde dehydrogenase, causing acetaldehyde accumulation (severe nausea, vomiting, flushing, tachycardia) if alcohol is consumed."
+    },
+    {
+      question: "29. A patient taking Nitrofurantoin (e.g., Urofurantin) for a UTI returns to the community pharmacy worried about their urine color. What reassuring advice should the pharmacist provide?",
+      options: [
+        "Discontinue immediately; dark urine indicates sudden liver failure",
+        "Reassure them that brown or dark yellow urine is a harmless effect of this medication",
+        "Tell them to drink lemon juice to turn the urine clear",
+        "Advise them that purple urine indicates kidney damage"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Nitrofurantoin harmlessly discolors urine dark yellow or brown; counseling patients in advance prevents unnecessary alarm."
+    },
+    {
+      question: "30. When dispensing Metronil (Metronidazole by SDI) tablets, what practical advice should be given if the patient experiences stomach distress?",
+      options: [
+        "Take the tablet with or immediately after meals to minimize GI upset",
+        "Take strictly on an empty stomach with vinegar",
+        "Chew the tablet dry without liquids",
+        "Dissolve the tablet in hot coffee"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Administering Metronidazole (Metronil / Flagyl) with meals or milk helps decrease nausea and abdominal discomfort."
+    },
+
+    // --- 10 ANTIFUNGAL MCQS ---
+    {
+      question: "31. What is the cellular mechanism of action of Fluconazole and other azole antifungals?",
+      options: [
+        "Inhibition of 1,3-beta-D-glucan synthase enzyme",
+        "Inhibition of fungal CYP450 (14-alpha-demethylase), blocking ergosterol synthesis",
+        "Direct binding to ergosterol creating membrane pores",
+        "Inhibition of squalene epoxidase in cell walls"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Azoles inhibit 14-alpha-demethylase, converting lanosterol to ergosterol, thereby disrupting fungal membrane integrity."
+    },
+    {
+      question: "32. A patient prescribed oral Ketoconazole or Itraconazole capsules should be advised to take their dose with which type of beverage for adequate absorption?",
+      options: [
+        "Milk or calcium-fortified juice",
+        "An acidic beverage like cola or orange juice",
+        "Sodium bicarbonate solution",
+        "Warm green tea"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Itraconazole capsules and Ketoconazole require gastric acidity for dissolution and systemic absorption."
+    },
+    {
+      question: "33. A female patient asks how to take a single dose of Fluzole 150 mg (Fluconazole by Pioneer Co.) prescribed for vaginal thrush. What is the correct counseling advice?",
+      options: [
+        "Take one capsule daily by mouth for 30 consecutive days",
+        "Take the single 150 mg capsule orally with water, with or without food",
+        "Insert the capsule topically as a vaginal suppository",
+        "Dissolve the capsule powder in hot water and apply to the skin"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Oral Fluconazole 150 mg (Fluzole / Diflucan) is administered as a single oral dose for uncomplicated vaginal candidiasis."
+    },
+    {
+      question: "34. Amphotericin B exerts its potent fungicidal action by which cellular mechanism?",
+      options: [
+        "Binding directly to ergosterol in the fungal membrane to form transmembrane pores",
+        "Blocking DNA and RNA synthesis via conversion to 5-fluorouracil",
+        "Inhibiting fungal cell wall glucan production",
+        "Blocking microtubule assembly during mitosis"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Polyenes like Amphotericin B bind ergosterol directly, causing ion leakage and fungal cell lysis."
+    },
+    {
+      question: "35. Why are liposomal/lipid formulations of Amphotericin B preferred over conventional Amphotericin B deoxycholate in clinical practice?",
+      options: [
+        "They possess a broader antifungal spectrum against viruses",
+        "They significantly reduce nephrotoxicity and infusion-related reactions",
+        "They eliminate the need for intravenous administration",
+        "They do not bind fungal membranes"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Lipid formulations act as drug reservoirs targeting fungal cells while sparing host renal tubular tissues."
+    },
+    {
+      question: "36. A mother buys Daktarin Oral Gel (Miconazole) for her infant's oral thrush. What key counseling point must the pharmacist highlight to prevent choking?",
+      options: [
+        "Apply a large blob of gel directly to the back of the baby's throat all at once",
+        "Apply small amounts of gel to the front of the mouth using a clean finger, avoiding the back of the throat",
+        "Mix the entire tube of gel into the infant's milk bottle",
+        "Instruct the infant to gargle the gel for two minutes and spit out"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Daktarin Oral Gel should be applied in small portions to the front of the oral cavity to avoid accidental choking in infants."
+    },
+    {
+      question: "37. Echinocandins (e.g., Caspofungin, Micafungin) act against fungal cell structures via which unique mechanism?",
+      options: [
+        "Inhibition of ergosterol cell membrane synthesis",
+        "Inhibition of (1,3)-beta-D-glucan synthase, weakening the fungal cell wall",
+        "Binding fungal tubulin subunits",
+        "Inhibition of fungal squalene epoxidase"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Echinocandins target cell wall glucan synthesis, making them highly selective with low human cellular toxicity."
+    },
+    {
+      question: "38. A patient is prescribed Terbasil 250 mg tablets (Terbinafine by Awamedica) for a fungal nail infection. What potential side effect regarding taste should they be advised about?",
+      options: [
+        "Temporary loss or alteration of taste (ageusia/dysgeusia)",
+        "Permanent dark blue staining of the teeth",
+        "An intense sweet taste in all consumed foods",
+        "Permanent loss of hearing"
+      ],
+      answer: 0,
+      explanation: "<strong>Clinical Pearl:</strong> Oral Terbinafine (Lamisil / Terbasil) can cause temporary loss or disturbance of taste, which typically resolves after stopping treatment."
+    },
+    {
+      question: "39. Patients started on long-term oral Terbinafine for toenail infections should undergo baseline and periodic laboratory monitoring of which function?",
+      options: [
+        "Serum creatinine and BUN",
+        "Hepatic transaminases (LFTs)",
+        "Pulmonary function tests",
+        "Thyroid stimulating hormone (TSH)"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Oral Terbinafine carries risk of rare hepatotoxicity; baseline LFTs and periodic hepatic evaluations are recommended."
+    },
+    {
+      question: "40. Oral Griseofulvin is classically taken with a high-fat meal (e.g., milk, butter, ice cream) to address which pharmacokinetic property?",
+      options: [
+        "To prevent severe gastric acidity",
+        "To enhance GI dissolution and systemic lipophilic absorption",
+        "To prevent rapid renal clearance",
+        "To block hepatic metabolism"
+      ],
+      answer: 1,
+      explanation: "<strong>Clinical Pearl:</strong> Griseofulvin is highly lipophilic; co-administration with fatty foods significantly increases its oral bioavailability."
+    }
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let selectedOption = null;
+
+  function loadQuestion() {
+    const q = questions[currentQuestionIndex];
+    
+    // Update progress bar & labels
+    const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+    document.getElementById("progress").style.width = progressPercent + "%";
+    document.getElementById("question-number").innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+    document.getElementById("question-text").innerHTML = q.question;
+    
+    // Clear state
+    const container = document.getElementById("options-container");
+    container.innerHTML = "";
+    const explanationDiv = document.getElementById("explanation");
+    explanationDiv.style.display = "none";
+    explanationDiv.innerHTML = "";
+    
+    const nextBtn = document.getElementById("next-btn");
+    nextBtn.disabled = true;
+    if (currentQuestionIndex === questions.length - 1) {
+      nextBtn.innerText = "Finish Quiz";
+    } else {
+      nextBtn.innerText = "Next Question";
+    }
+
+    selectedOption = null;
+
+    // Render options
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.innerText = opt;
+      btn.onclick = () => selectOption(idx);
+      container.appendChild(btn);
+    });
+  }
+
+  function selectOption(index) {
+    if (selectedOption !== null) return; // Prevent changing choice after selection
+    
+    selectedOption = index;
+    const q = questions[currentQuestionIndex];
+    const container = document.getElementById("options-container");
+    const buttons = container.getElementsByClassName("option-btn");
+
+    if (index === q.answer) {
+      score++;
+      buttons[index].classList.add("correct");
+    } else {
+      buttons[index].classList.add("incorrect");
+      buttons[q.answer].classList.add("correct");
+    }
+
+    // Disable all options after selection
+    for (let btn of buttons) {
+      btn.disabled = true;
+    }
+
+    // Show clinical pearl explanation
+    const explanationDiv = document.getElementById("explanation");
+    explanationDiv.innerHTML = q.explanation;
+    explanationDiv.style.display = "block";
+
+    // Enable next button
+    document.getElementById("next-btn").disabled = false;
+  }
+
+  function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+      currentQuestionIndex++;
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    document.getElementById("progress").style.width = "100%";
+    const percentage = Math.round((score / questions.length) * 100);
+    
+    const quizBody = document.getElementById("quiz-body");
+    quizBody.innerHTML = `
+      <div class="results">
+        <h2>Quiz Completed!</h2>
+        <p>Your Final Score: <strong>${score} / ${questions.length}</strong> (${percentage}%)</p>
+        <button class="btn" onclick="restartQuiz()">Try Again</button>
+      </div>
+    `;
+    
+    document.getElementById("footer").style.display = "none";
+  }
+
+  function restartQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    document.getElementById("footer").style.display = "flex";
+    
+    // Restore initial DOM structure
+    const quizBody = document.getElementById("quiz-body");
+    quizBody.innerHTML = `
+      <div class="question-meta" id="question-number">Question 1 of 40</div>
+      <div class="question-text" id="question-text">Loading...</div>
+      <div class="options" id="options-container"></div>
+      <div class="explanation" id="explanation"></div>
+    `;
+    
+    loadQuestion();
+  }
+
+  // Initialize quiz on start
+  loadQuestion();
+</script>
 </body>
 </html>
