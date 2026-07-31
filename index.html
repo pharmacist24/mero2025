@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Community Pharmacy Training (Ahmed Hamid Pharmacy)</title>
+  <title>Community Pharmacy Training - Antibacterials & Antifungals (Iraq Practice)</title>
   <style>
     :root {
-      --primary: #019533;
+      --primary: #0284c7;
       --primary-dark: #0369a1;
       --background: #f8fafc;
       --surface: #ffffff;
@@ -14,6 +14,7 @@
       --text-light: #64748b;
       --success: #16a34a;
       --danger: #dc2626;
+      --warning: #eab308;
       --border: #e2e8f0;
       --radius: 10px;
     }
@@ -49,17 +50,51 @@
       background: var(--primary);
       color: white;
       padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .header h1 {
-      font-size: 1.4rem;
+    .header-text h1 {
+      font-size: 1.3rem;
       font-weight: 600;
     }
 
-    .header p {
+    .header-text p {
       font-size: 0.85rem;
       opacity: 0.9;
       margin-top: 4px;
+    }
+
+    .timer-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .timer-badge.warning {
+      background: #fef08a;
+      color: #854d0e;
+    }
+
+    .timer-badge.danger {
+      background: #fecaca;
+      color: #991b1b;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
     }
 
     .progress-bar {
@@ -166,14 +201,25 @@
       margin-bottom: 24px;
       font-size: 1.1rem;
     }
+
+    .time-up-banner {
+      color: var(--danger);
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
 
 <div class="quiz-card">
   <div class="header">
-    <h1>Summer Training Guide Evaluation</h1>
-    <p>30 Antibacterial & 10 Antifungal Community Pharmacy MCQs (Iraq Practice)</p>
+    <div class="header-text">
+      <h1>Summer Training Guide Evaluation</h1>
+      <p>30 Antibacterial & 10 Antifungal MCQs</p>
+    </div>
+    <div class="timer-badge" id="timer-display">
+      ⏱️ <span id="timer">20:00</span>
+    </div>
   </div>
   <div class="progress-bar">
     <div class="progress-fill" id="progress"></div>
@@ -574,6 +620,36 @@
 
   let currentQuestionIndex = 0;
   let userAnswers = new Array(questions.length).fill(null);
+  
+  // 20 Minutes Timer Variable (in seconds)
+  let totalTime = 20 * 60;
+  let timerInterval = null;
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      totalTime--;
+
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+
+      const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      document.getElementById("timer").innerText = formattedTime;
+
+      const badge = document.getElementById("timer-display");
+      if (totalTime <= 300 && totalTime > 60) {
+        badge.classList.add("warning");
+      } else if (totalTime <= 60) {
+        badge.classList.remove("warning");
+        badge.classList.add("danger");
+      }
+
+      // Time Up: Freeze and Show Score
+      if (totalTime <= 0) {
+        clearInterval(timerInterval);
+        showResults(true);
+      }
+    }, 1000);
+  }
 
   function loadQuestion() {
     const q = questions[currentQuestionIndex];
@@ -629,11 +705,12 @@
       currentQuestionIndex++;
       loadQuestion();
     } else {
-      showResults();
+      clearInterval(timerInterval);
+      showResults(false);
     }
   }
 
-  function showResults() {
+  function showResults(isTimeUp = false) {
     document.getElementById("progress").style.width = "100%";
     
     // Calculate final score
@@ -649,6 +726,7 @@
     const quizBody = document.getElementById("quiz-body");
     quizBody.innerHTML = `
       <div class="results">
+        ${isTimeUp ? '<p class="time-up-banner">⏰ Time limit of 20 minutes reached! The exam has ended.</p>' : ''}
         <h2>Exam Completed!</h2>
         <p>Your Final Score: <strong>${score} / ${questions.length}</strong> (${percentage}%)</p>
         <button class="btn" onclick="restartQuiz()">Retake Exam</button>
@@ -659,8 +737,15 @@
   }
 
   function restartQuiz() {
+    clearInterval(timerInterval);
+    totalTime = 20 * 60;
     currentQuestionIndex = 0;
     userAnswers = new Array(questions.length).fill(null);
+    
+    const badge = document.getElementById("timer-display");
+    badge.classList.remove("warning", "danger");
+    document.getElementById("timer").innerText = "20:00";
+    
     document.getElementById("footer").style.display = "flex";
     
     const quizBody = document.getElementById("quiz-body");
@@ -671,10 +756,12 @@
     `;
     
     loadQuestion();
+    startTimer();
   }
 
-  // Initialize exam on page load
+  // Initialize exam and start timer on page load
   loadQuestion();
+  startTimer();
 </script>
 </body>
 </html>
